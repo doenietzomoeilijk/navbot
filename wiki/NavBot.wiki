@@ -2,6 +2,16 @@
 
 = Introduction =
 
-Please feel free to fill this in - information can be found [http://beautifullycraftedsoftware.blogspot.com on the original blog] for now.
+If you're new to NavBot, please see the QuickStartGuide!
 
-If you're using NavBot, please see the QuickStartGuide
+= About NavBot =
+
+Project members - please feel free to fill this in :-) Information can be found [http://beautifullycraftedsoftware.blogspot.com on the original blog] for now.
+
+= Working on NavBot =
+
+The more, the merrier! NavBot is written in C# using Visual Studio Express 2005 - freely available [http://msdn2.microsoft.com/en-gb/express/aa975050.aspx from M$] - be sure to download the 2005 edition, not 2008 beta 2. The project types aren't backwardly-compatible, so we'll port on the full release of 2008 beta 2. 
+
+NavBot is also fully unit-tested, and is intended to stay that way! You need NUnit to run the tests - available [http://www.nunit.org/index.php?p=download here].
+
+[http://tortoisesvn.net/downloads Tortoise SVN] is recommended for working with the repository.
