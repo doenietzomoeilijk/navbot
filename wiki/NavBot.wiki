@@ -1,4 +1,4 @@
-#summary Main NavBot information page
+#summary The most beautifully simple EVE-online trading assistant in the world
 
 = Introduction =
 
