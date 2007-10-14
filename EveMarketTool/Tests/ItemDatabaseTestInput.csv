@@ -1,0 +1,5 @@
+"typeID";"groupID";"typeName";"description";"graphicID";"radius";"mass";"volume";"capacity";"portionSize";"raceID";"basePrice";"published";"marketGroupID";"chanceOfDuplicating"
+"20";"457";"Kernite";"Kernite is a fairly common ore type that yields the largest amount of mexallon of any ore types in the world. Besides mexallon the Kernite also has a bit of tritanium and isogen. 400 units of ore are needed for refining.";"1.270";"1,00";"1E35";"1,20";"0,00";"400";"";"0,00";"false";"523";"0,00"
+"592";"25";"Navitas";"The Navitas is a solid mining vessel; in wide use by independent excavators. It is also one of the best ships available for budding traders or even scavengers. The long-range scanners and sturdy outer shell of the ship help to protect the ship from harassment.
+
+Special Ability: 5% "bonus" to cargo capacity and 20% bonus to mining laser yield per level. -60% mining laser capacitor use";"59";"39,00";"1.600.000,00";"10.000,00";"215,00";"1";"8";"0,00";"false";"77";"0,07"
