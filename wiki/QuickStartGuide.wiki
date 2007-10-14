@@ -1,4 +1,5 @@
 #summary NavBot Quick-Start Guide
+#labels Featured
 
 Thank-you for your purchase of the NavBot-class trade assistant. This short guide will help you install the unit and connect it with your Pod's systems.
 
