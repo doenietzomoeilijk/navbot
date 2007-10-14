@@ -10,7 +10,9 @@ Project members - please feel free to fill this in :-) Information can be found 
 
 = Working on NavBot =
 
-The more, the merrier! NavBot is written in C# using Visual Studio Express 2005 - freely available [http://msdn2.microsoft.com/en-gb/express/aa975050.aspx from M$] - be sure to download the 2005 edition, not 2008 beta 2. The project types aren't backwardly-compatible, so we'll port on the full release of 2008 beta 2. 
+The more, the merrier! Post a bit about yourself and your programming background [http://beautifullycraftedsoftware.blogspot.com/2007/10/navbot-goes-open-source.html here] to get added to the project. 
+
+NavBot is written in C# using Visual Studio Express 2005 - freely available [http://msdn2.microsoft.com/en-gb/express/aa975050.aspx from M$] - be sure to download the 2005 edition, not 2008 beta 2. The project types aren't backwardly-compatible, so we'll port on the full release of 2008 beta 2. 
 
 NavBot is also fully unit-tested, and is intended to stay that way! You need NUnit to run the tests - available [http://www.nunit.org/index.php?p=download here].
 
