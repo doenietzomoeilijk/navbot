@@ -1,0 +1,7 @@
+#summary Main NavBot information page
+
+= Introduction =
+
+Please feel free to fill this in - information can be found [http://beautifullycraftedsoftware.blogspot.com on the original blog] for now.
+
+If you're using NavBot, please see the QuickStartGuide
