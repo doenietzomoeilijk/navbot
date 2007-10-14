@@ -1,0 +1,31 @@
+#summary NavBot Quick-Start Guide
+
+Thank-you for your purchase of the NavBot-class trade assistant. This short guide will help you install the unit and connect it with your Pod's systems.
+
+== Installing NavBot ==
+Download and extract the setup files, the run setup.exe. NavBot should automatically detect the EVE directories that link you to your Pod and will run in the system tray (bottom-right).
+
+== Your First Time with NavBot ==
+Once NavBot is running in the taskbar, go into EVE and open the in-game browser. Either press Ctrl-V or type "http://localhost:9999" into the address bar, and press enter. This will connect you to NavBot.
+
+To get the most out of NavBot, you need to make it a "trusted site". NavBot itself gives you links to do this, but sometimes the EVE browser seems to forget. You might have to open the list of trusted sites manually from the menu bar and check that http://localhost:9999 is listed as trusted.
+
+Since this is your first time, let's take it slow. Ask NavBot to show you a list of market reports you already have (3rd option). If you have any reports, tell NavBot to remove them all - this places them in an Archive folder in case you want them again in the future.
+
+Now, open the market in EVE and find "Reports" in the list of trade items. Select it, then click on the "Export Data" button.
+
+Now go back to NavBot and ask to see how you can make money / start trading (1st option).
+NavBot will ask you how much ISK you have available and how much cargo space you have available. Fill in these values and press "Enter".
+
+Now for the best bit - the top trade routes! NavBot finds three kinds of routes:
+  # The best (most profit per warp) single trade trip you can make, starting from your current system. This is what you'll usually use; it tells you how to maximise the amount of isk you're earning per hour.
+  # The best (most profit per warp) single trade trip between any two systems that NavBot can find. This gives you an idea of how much profit is available in the regions you've exported, and can help you decide whether to stay where you are or go to a different system to start trading there.
+  # The largest profit in total to be found between any two systems. This is perfect if you just want to stick the autopilot on, sit back and relax.
+
+For each type of route, NavBot shows two routes - one with systems that start and end in secure space (>0.5) and one with systems that may start or end in insecure space (<0.5).
+
+Picking a route is easy - you can right-click on any of the links and choose to autopilot to them or even dock directly at the correct station, all from NavBot's report screen. The type and number of items to buy are shown too!
+
+Finally, after each trip remember to re-export the market data for any item you've just sold, and to update your ISK in NavBot - the routes you get are only as fresh as the data you give it!
+
+Happy trading!
