@@ -139,6 +139,8 @@ namespace EveMarketTool
                 int quantityForSale = forSale[si].Quantity;
                 int quantityCanAfford = (int)Math.Truncate(iskLeft/forSale[si].UnitPrice);
                 int quantityCanTransport = (int)Math.Truncate(cargoSpaceLeft/forSale[si].Type.Volume);
+                if (quantityCanAfford == 0 || quantityCanTransport == 0)
+                    break;
                 int quantityCanProfitablySell = GetProfitableSaleQuantity(forSale[si].UnitPrice, wanted, quantityBoughtInTotal);
                 quantityBought = 0; // reset to zero for clarity
                 quantityBought = Math.Min(quantityForSale, quantityCanAfford);

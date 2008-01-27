@@ -14,6 +14,11 @@ namespace EveMarketTool
             purchases.Add(t);
         }
 
+        public TradeList GetPurchases()
+        {
+            return purchases;
+        }
+
         public ItemType Type
         {
             get { return purchases[0].Type; }

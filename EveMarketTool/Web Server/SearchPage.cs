@@ -189,6 +189,12 @@ namespace EveMarketTool
             output += "taking " + route.Quantity + " " + Info(route.Type) + " from " + Info(route.Source, systemName) + " to " + Info(route.Destination, route.Source.System);
             output += ", " + FormatIsk(route.ProfitPerWarp) + "/warp, ";
             output += "limited by " + route.LimitedBy + ", " + route.Security + " sec.";
+            TradeList purchases = route.GetPurchases();
+
+            foreach(Trade trade in purchases)
+            {
+                output += "<br>Items to buy:<br>" + trade.ToString(); 
+            }
             return output;
         }
 
