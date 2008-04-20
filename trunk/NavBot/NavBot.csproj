@@ -12,13 +12,13 @@
     <Win32Resource>
     </Win32Resource>
     <ApplicationIcon>Face.ico</ApplicationIcon>
-    <ManifestCertificateThumbprint>78ECA464E4EBD190D64873F2745A561B05E7158A</ManifestCertificateThumbprint>
-    <ManifestKeyFile>NavBot_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestCertificateThumbprint>889603279456D6D32A38DFEEE25FE83D19078D98</ManifestCertificateThumbprint>
+    <ManifestKeyFile>NavBot_1_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <SignManifests>true</SignManifests>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetZone>LocalIntranet</TargetZone>
-    <PublishUrl>C:\Users\Mark\Documents\My Code\EveMarketTool\Publish\</PublishUrl>
+    <PublishUrl>C:\Users\Mark\Documents\My Code\NavBot\Publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -80,6 +80,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="NavBot_1_TemporaryKey.pfx" />
     <None Include="NavBot_TemporaryKey.pfx" />
     <BaseApplicationManifest Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">

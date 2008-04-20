@@ -93,5 +93,12 @@ namespace EveMarketTool.Tests
             string lowerCaseText = WebUtils.PlainText(html).ToLower();
             Assert.AreEqual(1, factory.ArchiveAllCalls, "ArchiveAllLogs() should have been called once");
         }
+
+        [Test]
+        public void ContainsTitle()
+        {
+            string html = page.Render(null, null, null, emptyHeaders, new NameValueCollection());
+            Assert.IsTrue(html.Contains("<title>NavBot</title>"), "HTML title tag missing");
+        }
     }
 }

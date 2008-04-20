@@ -39,7 +39,7 @@ namespace EveMarketTool
                 factory.ArchiveAllLogs();
             }
 
-            return "<html><body>" + ReplaceVariables(header, systemName, charName, charId) + ShowReportList() + "</body></html>";
+            return "<html><title>NavBot</title><body>" + ReplaceVariables(header, systemName, charName, charId) + ShowReportList() + "</body></html>";
         }
 
         string ShowReportList()

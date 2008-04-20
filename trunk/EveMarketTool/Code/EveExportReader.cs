@@ -21,7 +21,7 @@ namespace EveMarketTool
 
         void ReadFromString(string text)
         {
-            string[] lines = text.Split(new string[] { "\"\r\n\"" }, StringSplitOptions.RemoveEmptyEntries);
+            string[] lines = text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             string[] header = ReadWords(lines[0]);
 
             Dictionary<string, string> dict = new Dictionary<string, string>();
@@ -51,11 +51,11 @@ namespace EveMarketTool
             ReadFromString(text);
         }
 
-        /// Convert Eve ID numbers from input files (they use . as a thousand seperator)
+        /// Convert Eve ID numbers from input files (they are sometimes "null", used to contain a '.' as thousand seperator too)
         public int ParseId(string input) 
         {
-            string converted = input.Replace(".", "");
-            if (converted.Length > 0)
+            string converted = input;
+            if (converted.Length > 0 && converted != "null")
             {
                 return int.Parse(converted);
             }
@@ -65,16 +65,15 @@ namespace EveMarketTool
             }
         }
 
-        /// Convert Eve numbers from input files (they use . as a thousand seperator and , as a decimal seperator)
-        private static readonly CultureInfo GermanCulture = new CultureInfo("de-DE");
+        /// Convert Eve numbers from input files (they used to use . as a thousand seperator and , as a decimal seperator, but are now InvariantCulture)
         public float ParseNumber(string input)
         {
-            return float.Parse(input, GermanCulture);
+            return float.Parse(input, CultureInfo.InvariantCulture);
         }
 
         private string[] ReadWords(string line)
         {
-            string[] words = line.Split(new string[] { "\";\"" }, StringSplitOptions.None);
+            string[] words = line.Split(new string[] { "|" }, StringSplitOptions.None);
             for (int i = 0; i < words.Length; i++)
             {
                 words[i] = words[i].TrimStart(new char[] { '"' });
