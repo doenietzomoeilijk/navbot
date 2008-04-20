@@ -53,7 +53,7 @@ namespace EveMarketTool
                 }
             }
 
-            return "<html><body>" + ReplaceVariables(header, input) + Conversation() + "</body></html>";
+            return "<html><title>NavBot</title><body>" + ReplaceVariables(header, input) + Conversation() + "</body></html>";
         }
 
         string Conversation()

@@ -6,6 +6,6 @@ namespace EveMarketTool
 {
     public class Constants
     {
-        public readonly static string Revision = "G";
+        public readonly static string Revision = "H";
     }
 }

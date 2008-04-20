@@ -225,5 +225,12 @@ namespace EveMarketTool.Tests
             Assert.AreEqual("jump", page.Pluralize("jump", "jumps", 1));
             Assert.AreEqual("jumps", page.Pluralize("jump", "jumps", 200));
         }
+
+        [Test]
+        public void ContainsTitle()
+        {
+            string html = page.Render(system, charName, charId, trustedHeaders, query);
+            Assert.IsTrue(html.Contains("<title>NavBot</title>"), "HTML title tag missing");
+        }
     }
 }

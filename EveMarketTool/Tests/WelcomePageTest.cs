@@ -44,6 +44,7 @@ namespace EveMarketTool.Tests
             Assert.IsTrue(textOnly.Contains("To do this, I need to be added to your 'trusted' list."), "No trust request");
             Assert.IsTrue(html.Contains("http://localhost:9999/trustme"), "No trustme link");
             Assert.IsTrue(textOnly.Contains("This lets me know which system we are in, which helps me find the most profitable routes for us to take!"), "No trust explanation");
+            Assert.IsTrue(html.Contains("<title>NavBot</title>"), "HTML title tag missing");
         }
 
         [Test]
@@ -56,6 +57,7 @@ namespace EveMarketTool.Tests
             Assert.IsTrue(textOnly.Contains("to assist you in finding the most profitable trade routes in the universe."), "No purpose given");
             Assert.IsTrue(html.Contains("http://localhost:9999/Search"), "No search link");
             Assert.IsTrue(html.Contains("http://localhost:9999/Reports"), "No reports link");
+            Assert.IsTrue(html.Contains("<title>NavBot</title>"), "HTML title tag missing");
         }
     }
 }

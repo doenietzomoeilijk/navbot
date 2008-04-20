@@ -29,8 +29,8 @@ namespace EveMarketTool.Tests
         [Test]
         public void NumbersConverted()
         {
-            Assert.AreEqual(1270, reader.ParseId("1.270"));
-            Assert.AreEqual(1234.56, reader.ParseNumber("1.234,56"));
+            Assert.AreEqual(1270, reader.ParseId("1270"));
+            Assert.AreEqual(1234.56, reader.ParseNumber("1,234.56"));
         }
 
         [Test]
@@ -40,7 +40,7 @@ namespace EveMarketTool.Tests
             Dictionary<string, string> second = reader.Fields[1];
             Assert.AreEqual("592", second["typeID"]);
             Assert.AreEqual("Navitas", second["typeName"]);
-            Assert.AreEqual("The Navitas is a solid mining vessel; in wide use by independent excavators. It is also one of the best ships available for budding traders or even scavengers. The long-range scanners and sturdy outer shell of the ship help to protect the ship from harassment.\r\n\r\nSpecial Ability: 5% \"bonus\" to cargo capacity and 20% bonus to mining laser yield per level. -60% mining laser capacitor use", second["description"]);
+            Assert.AreEqual("The Navitas is a solid mining vessel, in wide use by independent excavators. It is also one of the best ships available for budding traders or even scavengers. The long-range scanners and sturdy outer shell of the ship help to protect the ship from harassment.\n\nSpecial Ability: 5% bonus to cargo capacity and 20% bonus to mining laser yield per level. -60% mining laser capacitor use", second["description"]);
         }
 
         [Test]

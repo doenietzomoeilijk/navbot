@@ -7,7 +7,7 @@ namespace EveMarketTool.Tests
 {
     class TestObjectFactory
     {
-        public static string TestDirectory = "C:\\Dokumente und Einstellungen\\Mark\\Eigene Dateien\\My Code\\EveMarketTool\\EveMarketTool\\Tests\\";
+        public static string TestDirectory = "C:\\Dokumente und Einstellungen\\Mark\\Eigene Dateien\\My Code\\NavBot\\EveMarketTool\\Tests\\";
 
         public static ItemDatabase CreateItemDatabase()
         {
