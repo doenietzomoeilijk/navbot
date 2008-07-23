@@ -10,7 +10,11 @@ namespace EveMarketTool
         Dictionary<int, SolarSystem> solarSystemsById;
         Dictionary<int, Station> stationsById;
 
-        public Map()
+        public Map() : this(false)
+        {
+        }
+
+        public Map(bool highSecOnly)
         {
             SolarSystemsReader systemsReader = new SolarSystemsReader();
             solarSystemsByName = systemsReader.SolarSystemsByName;
@@ -19,6 +23,9 @@ namespace EveMarketTool
             SolarSystemJumpsReader jumpsReader = new SolarSystemJumpsReader(this);
             StationReader stationReader = new StationReader(this);
             stationsById = stationReader.StationsById;
+
+            if(highSecOnly)
+                RemoveLowSecSystems();
         }
 
         /// <summary>
@@ -94,6 +101,11 @@ namespace EveMarketTool
                     stillExpanding = stillExpanding || expanded;
                 }
             }
+        }
+
+        void RemoveLowSecSystems()
+        {
+            throw new Exception("The method or operation is not implemented.");
         }
     }
 }
