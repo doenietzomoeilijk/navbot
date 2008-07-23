@@ -28,7 +28,7 @@ namespace EveMarketTool.Tests.Mock_Objects
             this.parameters = parameters;
         }
 
-        public override TradeFinder Create()
+        public override TradeFinder Create(bool highSecOnly)
         {
             if (map != null)
                 return Create(map, market, TestObjectFactory.TestDirectory + "Logs", parameters);

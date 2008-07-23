@@ -13,6 +13,7 @@ namespace EveMarketTool
         string footer;
         NameValueCollection input = new NameValueCollection();
         TradeFinder finder;
+        TradeFinder highSecFinder;
         TradeFinderFactory factory;
         float isk = 0.0f;
         float cargo = 0.0f;
@@ -32,7 +33,8 @@ namespace EveMarketTool
 
         public override string Render(string systemName, string charName, string charId, NameValueCollection headers, NameValueCollection query)
         {
-            this.finder = factory.Create();
+            this.finder = factory.Create(false);
+            this.highSecFinder = factory.Create(true);
             this.systemName = systemName;
             input = new NameValueCollection(query);
             if (input["isk"] == null)
@@ -58,7 +60,7 @@ namespace EveMarketTool
 
         string Conversation()
         {
-            if (finder == null)
+            if (finder == null || highSecFinder == null)
                 return "<p>Ok, let's get some market data! Just open the Market and change the range filter to 'Region'. Now pick an item, click on the 'Details' tab and click on the 'Export to file' button. Do this with as many items as you like! I recommend things from the 'Trade Goods' section, like Carbon, Antibodies and Reports. Come back here when you're done!</p>";
             else if (MissingElements() != "")
             {
@@ -124,16 +126,18 @@ namespace EveMarketTool
         {
             string output = "";
 
-            if (finder == null)
+            if (finder == null || highSecFinder == null)
                 return "";
 
             finder.Parameters = new Parameters(isk, cargo, systemName, TripType.SingleTrip);
+            highSecFinder.Parameters = new Parameters(isk, cargo, systemName, TripType.SingleTrip);
 
             if (systemName != null)
             {
                 try
                 {
                     finder.SortByProfitPerWarpFromStartingSystem();
+                    highSecFinder.SortByProfitPerWarpFromStartingSystem();
                     output += "Looking for quick cash? Here's the trades that'll make us the best short-term profit:";
                     output += "<table>";
                     output += ShowBestTrips();
@@ -150,6 +154,7 @@ namespace EveMarketTool
             output += "Fancy a change of scenery? Here's the best trade routes anywhere in the galaxy:";
             output += "<table>";
             finder.SortByProfitPerWarp();
+            highSecFinder.SortByProfitPerWarp();
             output += ShowBestTrips();
             output += "</table>";
             output += "<br></br>";
@@ -157,6 +162,7 @@ namespace EveMarketTool
             output += "Feel like an epic journey? Here's how much profit we could make in one long trip:";
             output += "<table>";
             finder.SortByProfit();
+            highSecFinder.SortByProfit();
             output += ShowBestTrips();
             output += "</table>";
             output += "<br></br>";
@@ -166,10 +172,10 @@ namespace EveMarketTool
         string ShowBestTrips()
         {
             string output = "";
-            SingleTrip trip = finder.BestHighSecTrip();
+            SingleTrip trip = highSecFinder.BestTrip();
             if (trip != null)
                 output += "<tr><td>" + Info(trip) + "</td></tr>";
-            trip = finder.BestLowSecTrip();
+            trip = finder.BestTrip();
             if (trip != null)
                 output += "<tr><td>" + Info(trip) + "</td></tr>";
             return output;

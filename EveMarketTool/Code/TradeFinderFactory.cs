@@ -14,14 +14,14 @@ namespace EveMarketTool
             this.logFilePath = logFilePath;
         }
 
-        public virtual TradeFinder Create()
+        public virtual TradeFinder Create(bool highSecOnly)
         {
-            return Create(logFilePath);
+            return Create(logFilePath, highSecOnly);
         }
 
-        protected static TradeFinder Create(string logFilePath)
+        protected static TradeFinder Create(string logFilePath, bool highSecOnly)
         {
-            Map map = new Map();
+            Map map = new Map(highSecOnly);
             ItemDatabase itemDatabase = new ItemDatabase();
             Market market = new Market(itemDatabase, map);
             return Create(map, market, logFilePath, null);

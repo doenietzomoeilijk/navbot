@@ -154,25 +154,14 @@ namespace EveMarketTool.Tests
         }
 
         [Test]
-        public void BestHighSecTrip()
+        public void BestTrip()
         {
             parameters = new Parameters(10000000.0f, 10000000.0f, null, TripType.SingleTrip);
             finder = new TradeFinder(map, market, parameters);
             finder.SortByProfitPerWarp();
             Assert.Greater(finder.SingleTrips.Count, 0);
-            SingleTrip best = finder.BestHighSecTrip();
-            Assert.Greater(best.Security, 0.5);
-        }
-
-        [Test]
-        public void BestLowSecTrip()
-        {
-            parameters = new Parameters(10000000.0f, 10000000.0f, null, TripType.SingleTrip);
-            finder = new TradeFinder(map, market, parameters);
-            finder.SortByProfitPerWarp();
-            Assert.Greater(finder.SingleTrips.Count, 0);
-            SingleTrip best = finder.BestLowSecTrip();
-            Assert.Less(best.Security, 0.501);
+            SingleTrip best = finder.BestTrip();
+            Assert.AreSame(best, finder.SingleTrips[0]);
         }
 
         [Test]

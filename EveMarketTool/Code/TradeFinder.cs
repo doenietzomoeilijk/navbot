@@ -80,24 +80,12 @@ namespace EveMarketTool
             roundTrips.Sort(RoundTrip.CompareByProfit);
         }
 
-        public SingleTrip BestHighSecTrip()
+        public SingleTrip BestTrip()
         {
-            foreach (SingleTrip trip in singleTrips)
-            {
-                if (trip.Security > 0.5)
-                    return trip;
-            }
-            return null;
-        }
-
-        public SingleTrip BestLowSecTrip()
-        {
-            foreach (SingleTrip trip in singleTrips)
-            {
-                if (trip.Security <= 0.5)
-                    return trip;
-            }
-            return null;
+            if (singleTrips.Count > 0)
+                return singleTrips[0];
+            else
+                return null;
         }
 
         private void AddProfitableTrades()
