@@ -8,21 +8,26 @@ namespace EveMarketTool
     public class TradeFinderFactory
     {
         string logFilePath;
+        static Map map;
+        static ItemDatabase itemDatabase;
 
         public TradeFinderFactory(string logFilePath)
         {
             this.logFilePath = logFilePath;
         }
 
-        public virtual TradeFinder Create(bool highSecOnly)
+        public virtual TradeFinder Create()
         {
-            return Create(logFilePath, highSecOnly);
+            return Create(logFilePath);
         }
 
-        protected static TradeFinder Create(string logFilePath, bool highSecOnly)
+        protected static TradeFinder Create(string logFilePath)
         {
-            Map map = new Map(highSecOnly);
-            ItemDatabase itemDatabase = new ItemDatabase();
+            if (map == null)
+            {
+                map = new Map();
+            }
+            itemDatabase = new ItemDatabase();
             Market market = new Market(itemDatabase, map);
             return Create(map, market, logFilePath, null);
         }

@@ -39,29 +39,29 @@ namespace EveMarketTool.Tests
         [Test]
         public void TestProfitPerWarp()
         {
-            Assert.AreEqual(300.0f/5.0f, trip.ProfitPerWarp);
+            Assert.AreEqual(300.0f/5.0f, trip.ProfitPerWarp(true));
             Assert.AreEqual(0.0f, empty.Profit);
         }
 
         [Test]
         public void TestProfitPerWarpFrom()
         {
-            Assert.AreEqual(300.0f/10.0f, trip.ProfitPerWarpFrom(map.GetSystem(1)));
-            Assert.AreEqual(0.0f, empty.ProfitPerWarpFrom(map.GetSystem(2)));
+            Assert.AreEqual(300.0f/10.0f, trip.ProfitPerWarpFrom(map.GetSystem(1), true));
+            Assert.AreEqual(0.0f, empty.ProfitPerWarpFrom(map.GetSystem(2), true));
         }
 
         [Test]
         public void TestJumps()
         {
-            Assert.AreEqual(2, trip.Jumps);
-            Assert.AreEqual(int.MaxValue, empty.Jumps);
+            Assert.AreEqual(2, trip.Jumps(true));
+            Assert.AreEqual(int.MaxValue, empty.Jumps(true));
         }
 
         [Test]
         public void TestWarps()
         {
-            Assert.AreEqual(5, trip.Warps);
-            Assert.AreEqual(int.MaxValue, empty.Warps);
+            Assert.AreEqual(5, trip.Warps(true));
+            Assert.AreEqual(int.MaxValue, empty.Warps(true));
         }
 
         [Test]

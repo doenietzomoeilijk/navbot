@@ -7,7 +7,7 @@ namespace EveMarketTool.Tests
 {
     class TestObjectFactory
     {
-        public static string TestDirectory = "C:\\Dokumente und Einstellungen\\Mark\\Eigene Dateien\\My Code\\NavBot\\EveMarketTool\\Tests\\";
+        public static string TestDirectory = @"C:\dev\NavBot\EveMarketTool\Tests\";
 
         public static ItemDatabase CreateItemDatabase()
         {
@@ -16,56 +16,74 @@ namespace EveMarketTool.Tests
 
         public static Map CreateMap()
         {
-            /* Solar system test map (#stations, if more than 1):
-             *                  /-- line3A
-             * line1 --- line2 <                alone
-             *  (2)             \-- line3B       (3)
+            /* Solar system test map
+             * 
+             *               deadend1                  isolated1                 lowsec2 --- highsecIsolated
+             *                  |                                                    |
+             *  highsec1 --- highsec2 --- highsec3 --- highsec4 --- highsec5 --- highsec6 --- lowsec1
+             *     |                                                                             |
+             *     \-----------------------------------------------------------------------------/
              */
 
-            SolarSystem line1 = new SolarSystem(1, "Line1");
-            line1.Security = 1.0f;
-            Station line11 = new Station(11, 0, "Line1 Station1", line1);
-            Station line12 = new Station(12, 0, "Line1 Station2", line1);
+            SolarSystem highSec1 = new SolarSystem(1, "HighSec1", 0.93f);
+            SolarSystem highSec2 = new SolarSystem(2, "HighSec2", 1.0f);
+            SolarSystem highSec3 = new SolarSystem(3, "HighSec3", 0.45f);
+            SolarSystem highSec4 = new SolarSystem(4, "HighSec4", 0.59f);
+            SolarSystem highSec5 = new SolarSystem(5, "HighSec5", 0.65f);
+            SolarSystem highSec6 = new SolarSystem(6, "HighSec6", 0.78f);
+            SolarSystem deadEnd1 = new SolarSystem(7, "DeadEnd1", 0.9f);
+            SolarSystem lowSec1 = new SolarSystem(8, "LowSec1", 0.44f);
+            SolarSystem lowSec2 = new SolarSystem(9, "LowSec2", 0.34f);
+            SolarSystem highSecIsolated1 = new SolarSystem(10, "HighSecIsolated", 0.78f);
+            SolarSystem isolated1 = new SolarSystem(11, "Isolated1", 0.78f);
 
-            SolarSystem line2 = new SolarSystem(2, "Line2");
-            line2.Security = 0.9f;
-            Station line21 = new Station(21, 0, "Line2 Station1", line2);
-            
-            SolarSystem line3A = new SolarSystem(3, "Line3A");
-            line3A.Security = 0.8f;
-            Station line3A1 = new Station(31, 0, "Line3A Station1", line3A);
-            Station line3A2 = new Station(32, 0, "Line3A Station2", line3A);
-            
-            SolarSystem line3B = new SolarSystem(4, "Line3B");
-            line3B.Security = 0.7f;
-            Station line3B1 = new Station(41, 0, "Line3B Station1", line3B);
-            
-            SolarSystem alone = new SolarSystem(5, "Alone");
-            alone.Security = 0.0f;
-            Station alone1 = new Station(51, 0, "Alone Station1", alone);
-            Station alone2 = new Station(52, 0, "Alone Station2", alone);
-            Station alone3 = new Station(53, 0, "Alone Station3", alone);
+            GateBetween(highSec1, highSec2);
+            GateBetween(highSec2, highSec3);
+            GateBetween(highSec2, deadEnd1);
+            GateBetween(highSec3, highSec4);
+            GateBetween(highSec4, highSec5);
+            GateBetween(highSec5, highSec6);
+            GateBetween(highSec6, lowSec1);
+            GateBetween(highSec6, lowSec2);
+            GateBetween(highSecIsolated1, lowSec2);
+            GateBetween(lowSec1, highSec1);
 
-            GateBetween(line1, line2);
-            GateBetween(line2, line3A);
-            GateBetween(line2, line3B);
+            Station highSec11 = new Station(11, 0, "HighSec1 Station1", highSec1);
+            Station highSec12 = new Station(12, 0, "HighSec1 Station2", highSec1);
+
+            Station deadEnd11 = new Station(21, 0, "DeadEnd1 Station1", deadEnd1);
+
+            Station highSec61 = new Station(31, 0, "HighSec6 Station1", highSec6);
+            Station highSec62 = new Station(32, 0, "HighSec6 Station2", highSec6);
+
+            Station highSecIsolated11 = new Station(41, 0, "HighSecIsolated Station1", highSecIsolated1);
+
+            Station isolated11 = new Station(51, 0, "Isolated1 Station1", isolated1);
+            Station isolated12 = new Station(52, 0, "Isolated1 Station2", isolated1);
+            Station isolated13 = new Station(53, 0, "Isolated1 Station3", isolated1);
 
             MockSolarSystemsReader mockSystemsReader = new MockSolarSystemsReader();
-            mockSystemsReader.AddSystem(line1);
-            mockSystemsReader.AddSystem(line2);
-            mockSystemsReader.AddSystem(line3A);
-            mockSystemsReader.AddSystem(line3B);
-            mockSystemsReader.AddSystem(alone);
+            mockSystemsReader.AddSystem(highSec1);
+            mockSystemsReader.AddSystem(highSec2);
+            mockSystemsReader.AddSystem(highSec3);
+            mockSystemsReader.AddSystem(highSec4);
+            mockSystemsReader.AddSystem(highSec5);
+            mockSystemsReader.AddSystem(highSec6);
+            mockSystemsReader.AddSystem(deadEnd1);
+            mockSystemsReader.AddSystem(lowSec1);
+            mockSystemsReader.AddSystem(lowSec2);
+            mockSystemsReader.AddSystem(highSecIsolated1);
+            mockSystemsReader.AddSystem(isolated1);
             MockStationReader mockStationReader = new MockStationReader();
-            mockStationReader.AddStation(line11);
-            mockStationReader.AddStation(line12);
-            mockStationReader.AddStation(line21);
-            mockStationReader.AddStation(line3A1);
-            mockStationReader.AddStation(line3A2);
-            mockStationReader.AddStation(line3B1);
-            mockStationReader.AddStation(alone1);
-            mockStationReader.AddStation(alone2);
-            mockStationReader.AddStation(alone3);
+            mockStationReader.AddStation(highSec11);
+            mockStationReader.AddStation(highSec12);
+            mockStationReader.AddStation(deadEnd11);
+            mockStationReader.AddStation(highSec61);
+            mockStationReader.AddStation(highSec62);
+            mockStationReader.AddStation(highSecIsolated11);
+            mockStationReader.AddStation(isolated11);
+            mockStationReader.AddStation(isolated12);
+            mockStationReader.AddStation(isolated13);
             
             return new Map(mockSystemsReader, mockStationReader);
         }

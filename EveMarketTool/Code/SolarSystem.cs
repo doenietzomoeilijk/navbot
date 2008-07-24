@@ -18,12 +18,11 @@ namespace EveMarketTool
             get { return name; }
         }
 
-        private float security;
+        private float securityValue;
 
         public float Security
         {
-            get { return security; }
-            set { security = value; }
+            get { return securityValue; }
         }
 
         private List<SolarSystem> gates = new List<SolarSystem>();
@@ -32,17 +31,28 @@ namespace EveMarketTool
             get { return gates; }
         }
 
-        private Signpost signpost = new Signpost();
-        public Signpost Signpost
+        private Signpost signpostSecure = new Signpost();
+        public Signpost SignpostSecure
         {
-            get { return signpost; }
+            get { return signpostSecure; }
         }
 
-        public SolarSystem(int itemId, string itemName)
+        private Signpost signpostShortest = new Signpost();
+        public Signpost SignpostShortest
+        {
+            get { return signpostShortest; }
+        }
+
+        public SolarSystem(int itemId, string itemName, float security)
         {
             id = itemId;
             name = itemName;
-            signpost[this] = new SignpostEntry(null, 0);
+            securityValue = security;
+            signpostShortest[this] = new SignpostEntry(null, 0);
+            if (security >= 0.45f)
+            {
+                signpostSecure[this] = new SignpostEntry(null, 0);
+            }
         }
 
         public void ClearMarketData()
@@ -57,46 +67,82 @@ namespace EveMarketTool
         public void AddGateTo(SolarSystem destination)
         {
             gates.Add(destination);
-            signpost[destination] = new SignpostEntry(destination, 1);
+            if (SecurityStatus.IsSecure(Math.Min(this.Security, destination.Security)))
+            {
+                signpostSecure[destination] = new SignpostEntry(destination, 1);
+            }
+            signpostShortest[destination] = new SignpostEntry(destination, 1);
         }
 
         public bool UpdateSignpostTo(SolarSystem destination) // returns true if the destination has already been found
         {
-            if (signpost.ContainsKey(destination))
+            bool updated = false;
+
+            SolarSystem sSecure = GetNeighbourWithShortestDistanceTo(destination, true);
+            SolarSystem sShort = GetNeighbourWithShortestDistanceTo(destination, false);
+
+            if ((sSecure != null) && (SecurityStatus.IsSecure(this.Security)))
             {
-                return false;
-            }
-            else
-            {
-                SolarSystem s = GetNeighbourWithShortestDistanceTo(destination);
-                if (s == null)
+                if (signpostSecure.ContainsKey(destination)) 
                 {
-                    return false;
+                    if (signpostSecure[destination].Distance > (sSecure.SignpostSecure[destination].Distance + 1))
+                    {
+                        signpostSecure[destination] = new SignpostEntry(sSecure, sSecure.SignpostSecure[destination].Distance + 1);
+                        updated = true;
+                    }
                 }
                 else
                 {
-                    signpost[destination] = new SignpostEntry(s, s.Signpost[destination].Distance+1);
-                    return true;
+                    signpostSecure[destination] = new SignpostEntry(sSecure, sSecure.SignpostSecure[destination].Distance + 1);
+                    updated = true;
                 }
             }
+
+            if (sShort != null)
+            {
+                if (signpostShortest.ContainsKey(destination))
+                {
+                    if (signpostShortest[destination].Distance > (sShort.SignpostShortest[destination].Distance + 1))
+                    {
+                        signpostShortest[destination] = new SignpostEntry(sShort, sShort.SignpostShortest[destination].Distance + 1);
+                        updated = true;
+                    }
+                }
+                else
+                {
+                    signpostShortest[destination] = new SignpostEntry(sShort, sShort.SignpostShortest[destination].Distance + 1);
+                    updated = true;
+                }
+            }
+
+            return updated;
         }
 
-        private SolarSystem GetNeighbourWithShortestDistanceTo(SolarSystem destination)
+        private SolarSystem GetNeighbourWithShortestDistanceTo(SolarSystem destination, bool secure)
         {
             SolarSystem nearest = null;
             int shortestFound = int.MaxValue;
             foreach (SolarSystem s in gates)
             {
-                if (s.Signpost.ContainsKey(destination))
+                if ((secure) && (s.SignpostSecure.ContainsKey(destination)))
                 {
-                    if (s.Signpost[destination].Distance < shortestFound)
+                    if (s.SignpostSecure[destination].Distance < shortestFound)
                     {
                         nearest = s;
-                        shortestFound = s.Signpost[destination].Distance;
+                        shortestFound = s.SignpostSecure[destination].Distance;
+                    }
+                }
+                else if ((!secure) && (s.SignpostShortest.ContainsKey(destination)))
+                {
+                    if (s.SignpostShortest[destination].Distance < shortestFound)
+                    {
+                        nearest = s;
+                        shortestFound = s.SignpostShortest[destination].Distance;
                     }
                 }
             }
             return nearest;
         }
+
     }
 }

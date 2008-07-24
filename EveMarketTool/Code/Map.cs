@@ -10,11 +10,7 @@ namespace EveMarketTool
         Dictionary<int, SolarSystem> solarSystemsById;
         Dictionary<int, Station> stationsById;
 
-        public Map() : this(false)
-        {
-        }
-
-        public Map(bool highSecOnly)
+        public Map()
         {
             SolarSystemsReader systemsReader = new SolarSystemsReader();
             solarSystemsByName = systemsReader.SolarSystemsByName;
@@ -23,9 +19,6 @@ namespace EveMarketTool
             SolarSystemJumpsReader jumpsReader = new SolarSystemJumpsReader(this);
             StationReader stationReader = new StationReader(this);
             stationsById = stationReader.StationsById;
-
-            if(highSecOnly)
-                RemoveLowSecSystems();
         }
 
         /// <summary>
@@ -78,11 +71,40 @@ namespace EveMarketTool
             }
         }
 
-        public int DistanceBetween(SolarSystem source, SolarSystem destination)
+        public SecurityStatus.Level RouteSecurity(SolarSystem source, SolarSystem destination)
+        {
+            SecurityStatus.Level securityFromStartingSystem = SecurityStatus.Level.Isolated;
+
+            int jumpsFromStartSecure = DistanceBetween(source, destination, true);
+            int jumpsFromStartShortest = DistanceBetween(source, destination, false);
+
+            if (jumpsFromStartSecure == jumpsFromStartShortest)
+            {
+                securityFromStartingSystem = SecurityStatus.Level.HighSec;
+            }
+            else if ((jumpsFromStartSecure > jumpsFromStartShortest) && (jumpsFromStartSecure != int.MaxValue))
+            {
+                securityFromStartingSystem = SecurityStatus.Level.LowSecShortcut;
+            }
+            else if ((jumpsFromStartSecure == int.MaxValue) && (jumpsFromStartShortest != int.MaxValue))
+            {
+                securityFromStartingSystem = SecurityStatus.Level.LowSecOnly;
+            }
+
+            return securityFromStartingSystem;
+        }
+
+        public int DistanceBetween(SolarSystem source, SolarSystem destination, bool secure)
         {
             UpdateSignpostsBetween(source, destination);
-            if (source.Signpost.ContainsKey(destination))
-                return source.Signpost[destination].Distance;
+            if ((secure) && (source.SignpostSecure.ContainsKey(destination)))
+            {
+                return source.SignpostSecure[destination].Distance;
+            }
+            else if ((!secure) && (source.SignpostShortest.ContainsKey(destination)))
+            {
+                return source.SignpostShortest[destination].Distance;
+            }
             else
             {
                 return int.MaxValue;
@@ -92,7 +114,7 @@ namespace EveMarketTool
         void UpdateSignpostsBetween(SolarSystem source, SolarSystem destination)
         {
             bool stillExpanding = true; // maybe the route's impossible (Jove) in which case we need to know when to give up!
-            while (stillExpanding && !source.Signpost.ContainsKey(destination))
+            while (stillExpanding && !(source.SignpostShortest.ContainsKey(destination) && source.SignpostSecure.ContainsKey(destination)))
             {
                 stillExpanding = false; // assume false until proven otherwise
                 foreach (SolarSystem s in solarSystemsById.Values)
@@ -101,11 +123,11 @@ namespace EveMarketTool
                     stillExpanding = stillExpanding || expanded;
                 }
             }
-        }
-
-        void RemoveLowSecSystems()
-        {
-            throw new Exception("The method or operation is not implemented.");
+            if (!source.SignpostSecure.ContainsKey(destination))
+            {
+                // If we didn't find a secure route, drop a marker here to indicate that
+                source.SignpostSecure[destination] = new SignpostEntry(null, int.MaxValue);
+            }
         }
     }
 }

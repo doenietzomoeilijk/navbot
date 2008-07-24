@@ -10,11 +10,17 @@ namespace EveMarketTool.Tests
     public class MapTest
     {
         Map map;
-        SolarSystem line1;
-        SolarSystem line2;
-        SolarSystem line3A;
-        SolarSystem line3B;
-        SolarSystem alone;
+        SolarSystem highSec1;
+        SolarSystem highSec2;
+        SolarSystem highSec3;
+        SolarSystem highSec4;
+        SolarSystem highSec5;
+        SolarSystem highSec6;
+        SolarSystem deadEnd1;
+        SolarSystem lowSec1;
+        SolarSystem lowSec2;
+        SolarSystem highSecIsolated1;
+        SolarSystem isolated1;
 
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
@@ -25,17 +31,23 @@ namespace EveMarketTool.Tests
         public void TestCaseSetUp()
         {
             map = TestObjectFactory.CreateMap();
-            line1 = map.GetSystem("Line1");
-            line2 = map.GetSystem("Line2");
-            line3A = map.GetSystem("Line3A");
-            line3B = map.GetSystem("Line3B");
-            alone = map.GetSystem("Alone");
+            highSec1 = map.GetSystem("HighSec1");
+            highSec2 = map.GetSystem("HighSec2");
+            highSec3 = map.GetSystem("HighSec3");
+            highSec4 = map.GetSystem("HighSec4");
+            highSec5 = map.GetSystem("HighSec5");
+            highSec6 = map.GetSystem("HighSec6");
+            deadEnd1 = map.GetSystem("DeadEnd1");
+            lowSec1 = map.GetSystem("LowSec1");
+            lowSec2 = map.GetSystem("LowSec2");
+            highSecIsolated1 = map.GetSystem("HighSecIsolated");
+            isolated1 = map.GetSystem("Isolated1");
         }
 
         [Test]
         public void TestGetSystem()
         {
-            Assert.AreEqual(line1, map.GetSystem("Line1"));
+            Assert.AreEqual(highSec1, map.GetSystem("HighSec1"));
             Assert.IsNull(map.GetSystem("no such name"));
             Assert.IsNull(map.GetSystem(null));
         }
@@ -43,15 +55,18 @@ namespace EveMarketTool.Tests
         [Test]
         public void TestDistanceBetween()
         {
-            Assert.AreEqual(0, map.DistanceBetween(line1, line1));
-            Assert.AreEqual(0, map.DistanceBetween(alone, alone));
-            Assert.AreEqual(1, map.DistanceBetween(line1, line2));
-            Assert.AreEqual(1, map.DistanceBetween(line2, line3A));
-            Assert.AreEqual(1, map.DistanceBetween(line2, line3B));
-            Assert.AreEqual(2, map.DistanceBetween(line1, line3A));
-            Assert.AreEqual(2, map.DistanceBetween(line1, line3B));
-            Assert.AreEqual(2, map.DistanceBetween(line3A, line3B));
-            Assert.AreEqual(int.MaxValue, map.DistanceBetween(alone, line1));
+            Assert.AreEqual(0, map.DistanceBetween(highSec1, highSec1, true));
+            Assert.AreEqual(0, map.DistanceBetween(isolated1, isolated1, true));
+            Assert.AreEqual(1, map.DistanceBetween(highSec1, highSec2, true));
+            Assert.AreEqual(1, map.DistanceBetween(highSec2, highSec3, true));
+            Assert.AreEqual(1, map.DistanceBetween(highSec2, deadEnd1, true));
+            Assert.AreEqual(2, map.DistanceBetween(highSec1, highSec3, true));
+            Assert.AreEqual(2, map.DistanceBetween(highSec1, deadEnd1, true));
+            Assert.AreEqual(2, map.DistanceBetween(highSec3, deadEnd1, true));
+            Assert.AreEqual(5, map.DistanceBetween(highSec1, highSec6, true));
+            Assert.AreEqual(2, map.DistanceBetween(highSec1, highSec6, false));
+            Assert.AreEqual(int.MaxValue, map.DistanceBetween(highSec1, isolated1, false));
+            Assert.AreEqual(int.MaxValue, map.DistanceBetween(highSec1, isolated1, true));
         }
     }
 }
