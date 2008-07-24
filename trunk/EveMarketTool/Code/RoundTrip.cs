@@ -22,7 +22,7 @@ namespace EveMarketTool
         {
             get
             {
-                return Math.Min(there.Security, backAgain.Security);
+                return 0.0f;
             }
         }
 
@@ -30,7 +30,7 @@ namespace EveMarketTool
         {
             get
             {
-                int warps = there.Warps + backAgain.Warps;
+                int warps = there.Warps(true) + backAgain.Warps(true);
                 return Profit / warps;
             }
         }

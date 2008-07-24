@@ -18,18 +18,18 @@ namespace EveMarketTool
 
             SolarSystem startingSystem = map.GetSystem(parameters.StartingSystem);
             if (startingSystem == null)
-                profitPerWarp = (int)data.ProfitPerWarp;
+                profitPerWarp = (int)data.ProfitPerWarp(true);
             else
             {
                 data.StartingSystem = startingSystem;
-                profitPerWarp = (int)data.ProfitPerWarpFromStartingSystem;
+                profitPerWarp = (int)data.ProfitPerWarpFromStartingSystem(true);
             }
 
-            int jumpsFromStart = map.DistanceBetween(startingSystem, data.Source.System);
-            int jumps = data.Jumps;
+            int jumpsFromStart = map.DistanceBetween(startingSystem, data.Source.System, true);
+            int jumps = data.Jumps(true);
             string source = data.Source.Name;
             string destination = data.Destination.Name;
-            float security = data.Security;
+            SecurityStatus.Level security = data.Security;
             LimitingFactor limitedBy = data.LimitedBy;
 
             SubItems.Add(profitPerWarp.ToString());

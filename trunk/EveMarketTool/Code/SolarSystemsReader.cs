@@ -37,8 +37,7 @@ namespace EveMarketTool
             int itemId = ParseId(fields["solarSystemID"]);
             string itemName = fields["solarSystemName"];
             float security = ParseNumber(fields["security"]);
-            SolarSystem s = new SolarSystem(itemId, itemName);
-            s.Security = security;
+            SolarSystem s = new SolarSystem(itemId, itemName, security);
             solarSystems[itemId] = s;
             solarSystemsByName[itemName] = s;
         }

@@ -21,10 +21,10 @@ namespace EveMarketTool.Tests
         [SetUp]
         public void TestCaseSetUp()
         {
-            one = new SolarSystem(1, "One");
-            two = new SolarSystem(2, "Two");
-            three = new SolarSystem(3, "Three");
-            zero = new SolarSystem(0, "Zero");
+            one = new SolarSystem(1, "One", 1.0f);
+            two = new SolarSystem(2, "Two", 0.9f);
+            three = new SolarSystem(3, "Three", 0.8f);
+            zero = new SolarSystem(0, "Zero", 0.0f);
             one.AddGateTo(two);
             two.AddGateTo(one);
             two.AddGateTo(three);
@@ -37,23 +37,23 @@ namespace EveMarketTool.Tests
         public void TestUpdateSignpostTo()
         {
             one.UpdateSignpostTo(two);
-            Assert.IsTrue(one.Signpost.ContainsKey(two));
-            Assert.AreSame(one.Signpost[two].Direction, two);
-            Assert.AreEqual(1, one.Signpost[two].Distance);
+            Assert.IsTrue(one.SignpostSecure.ContainsKey(two));
+            Assert.AreSame(one.SignpostSecure[two].Direction, two);
+            Assert.AreEqual(1, one.SignpostSecure[two].Distance);
 
             one.UpdateSignpostTo(three);
-            Assert.IsTrue(one.Signpost.ContainsKey(three));
-            Assert.AreSame(one.Signpost[three].Direction, two);
-            Assert.AreEqual(2, one.Signpost[three].Distance);
+            Assert.IsTrue(one.SignpostSecure.ContainsKey(three));
+            Assert.AreSame(one.SignpostSecure[three].Direction, two);
+            Assert.AreEqual(2, one.SignpostSecure[three].Distance);
 
             three.UpdateSignpostTo(one);
-            Assert.IsTrue(three.Signpost.ContainsKey(one));
-            Assert.AreSame(three.Signpost[one].Direction, one);
-            Assert.AreEqual(1, three.Signpost[one].Distance);
+            Assert.IsTrue(three.SignpostSecure.ContainsKey(one));
+            Assert.AreSame(three.SignpostSecure[one].Direction, one);
+            Assert.AreEqual(1, three.SignpostSecure[one].Distance);
 
             // Check that this hasn't affected one's route to three
-            Assert.AreSame(one.Signpost[three].Direction, two);
-            Assert.AreEqual(2, one.Signpost[three].Distance);
+            Assert.AreSame(one.SignpostSecure[three].Direction, two);
+            Assert.AreEqual(2, one.SignpostSecure[three].Distance);
         }
     }
 }

@@ -24,15 +24,50 @@ namespace EveMarketTool
             get { return purchases[0].Type; }
         }
 
-        private float profitPerWarpFromStartingSystem;
+        private float profitPerWarpFromStartingSystemSecure;
+        private float profitPerWarpFromStartingSystemShortest;
+        private int jumpsFromStartSecure;
+        private int jumpsFromStartShortest;
+        private SecurityStatus.Level securityFromStartingSystem;
         public SolarSystem StartingSystem
         {
-            set { profitPerWarpFromStartingSystem = ProfitPerWarpFrom(value); }
+            set 
+            {
+                jumpsFromStartSecure = map.DistanceBetween(value, source.System, true);
+                jumpsFromStartShortest = map.DistanceBetween(value, source.System, false);
+
+                profitPerWarpFromStartingSystemSecure = ProfitPerWarpCalc(jumpsFromStartSecure, Warps(true));
+                profitPerWarpFromStartingSystemShortest = ProfitPerWarpCalc(jumpsFromStartShortest, Warps(false));
+
+                securityFromStartingSystem = map.RouteSecurity(value, source.System);
+            }
         }
 
-        public float ProfitPerWarpFromStartingSystem
+        public float ProfitPerWarpCalc(int jumpsFromStart, int warpsForTrade)
         {
-            get { return profitPerWarpFromStartingSystem; }
+            // distance from a system is #jumps * 2 to warp there, and +1 to get to the right station
+            int warps = warpsForTrade + (jumpsFromStart * 2 + 1);
+            return Profit / warps;
+        }
+
+        public float ProfitPerWarpFrom(SolarSystem startingSystem, bool secure)
+        {
+            // distance from a system is #jumps * 2 to warp there, and +1 to get to the right station
+            int warps = Warps(secure) + map.DistanceBetween(startingSystem, source.System, secure) * 2 + 1;
+            return Profit / warps;
+        }
+
+
+        public float ProfitPerWarpFromStartingSystem(bool secure)
+        {
+            if (secure)
+            {
+                return profitPerWarpFromStartingSystemSecure;
+            }
+            else
+            {
+                return profitPerWarpFromStartingSystemShortest;
+            }
         }
 
         public float Profit
@@ -44,6 +79,22 @@ namespace EveMarketTool
                 ItemType type = purchases[0].Type;
                 float saleValue = destination.GetSaleValueOf(type, Quantity);
                 return saleValue - Cost;
+            }
+        }
+
+        public float ProfitMargin
+        {
+            get
+            {
+                float profit = Profit;
+                if ((Cost + profit) > 0)
+                {
+                    return (profit / (Cost + profit));
+                }
+                else
+                {
+                    return 0.0f;
+                }
             }
         }
 
@@ -79,50 +130,40 @@ namespace EveMarketTool
             }
         }
 
-        public int Warps
+        public int Warps(bool secure)
         {
-            get
-            {
-                // if Jumps is effectively infinite, report this for Warps too
-                if (Jumps == int.MaxValue)
-                    return int.MaxValue;
+            int jumps = Jumps(secure);
+            // if Jumps is effectively infinite, report this for Warps too
+            if (jumps == int.MaxValue)
+                return int.MaxValue;
 
-                // each jump is: warp to gate, then jump.
-                if (Jumps > 0)
-                    return Jumps * 2 + 1;
+            // each jump is: warp to gate, then jump.
+            if (jumps > 0)
+                return jumps * 2 + 1;
+            else
+            {
+                if (source != destination)
+                {
+                    return 1;
+                }
                 else
                 {
-                    if (source != destination)
-                    {
-                        return 1;
-                    }
-                    else
-                    {
-                        return 0;
-                    }
+                    return 0;
                 }
             }
         }
 
-        public float ProfitPerWarp
+        public float ProfitPerWarp(bool secure)
         {
-            get
-            {
-                // #warps calulcated as: jump to the source system, jump to the source station 
-                // (skip this if we're already in the system, although we may be in the wrong station - never mind)
-                // then jump to the destination system and warp to the destination station
-                if (Warps == 0 && Profit > 0)
-                    return Profit;
-                else
-                    return Profit / Warps;
-            }
-        }
+            int warps = Warps(secure);
 
-        public float ProfitPerWarpFrom(SolarSystem startingSystem)
-        {
-            // distance from a system is #jumps * 2 to warp there, and +1 to get to the right station
-            int warps = Warps + map.DistanceBetween(startingSystem, source.System)*2+1;
-            return Profit / warps;
+            // #warps calulcated as: jump to the source system, jump to the source station 
+            // (skip this if we're already in the system, although we may be in the wrong station - never mind)
+            // then jump to the destination system and warp to the destination station
+            if (warps == 0 && Profit > 0)
+                return Profit;
+            else
+                return Profit / warps;
         }
 
         public ItemType ItemType
@@ -134,17 +175,26 @@ namespace EveMarketTool
             }
         }
 
-        private int jumps;
-        public int Jumps
+        private int jumpsSecure;
+        private int jumpsShortest;
+        public int Jumps(bool secure)
         {
-            get { return jumps; }
+            if (secure)
+            {
+                return jumpsSecure;
+            }
+            else
+            {
+                return jumpsShortest;
+            }
         }
 
-        public float Security
+        private SecurityStatus.Level security;
+        public SecurityStatus.Level Security
         {
             get
             {
-                return Math.Min(destination.System.Security, source.System.Security);
+                return security;
             }
         }
 
@@ -174,7 +224,26 @@ namespace EveMarketTool
             this.map = map;
             this.source = source;
             this.destination = destination;
-            jumps = map.DistanceBetween(source.System, destination.System);
+
+            jumpsSecure = map.DistanceBetween(source.System, destination.System, true);
+            jumpsShortest = map.DistanceBetween(source.System, destination.System, false);
+
+            if (jumpsSecure == jumpsShortest)
+            {
+                security = SecurityStatus.Level.HighSec;
+            }
+            else if ((jumpsSecure > jumpsShortest) && (jumpsSecure != int.MaxValue))
+            {
+                security = SecurityStatus.Level.LowSecShortcut;
+            }
+            else if ((jumpsSecure == int.MaxValue) && (jumpsShortest != int.MaxValue))
+            {
+                security = SecurityStatus.Level.LowSecOnly;
+            }
+            else
+            {
+                security = SecurityStatus.Level.LowSecOnly;
+            }
         }
 
         public string TypeName
@@ -191,19 +260,29 @@ namespace EveMarketTool
             }
         }
 
-        public override string ToString()
+        public string ToString(bool secure)
         {
-            return TypeName + " from " + source.Name + " to " + destination.Name + "(" + Jumps + " jumps)" + " for " + Profit + " isk profit (" + ProfitPerWarp + " isk/warp)";
+            return TypeName + " from " + source.Name + " to " + destination.Name + "(" + Jumps(secure) + " jumps)" + " for " + Profit + " isk profit (" + ProfitPerWarp(secure) + " isk/warp)";
         }
 
-        public static int CompareByProfitPerWarpFromStartingSystem(SingleTrip a, SingleTrip b)
+        public static int CompareByProfitPerWarpFromStartingSystemSecure(SingleTrip a, SingleTrip b)
         {
-            return b.profitPerWarpFromStartingSystem.CompareTo(a.profitPerWarpFromStartingSystem); // highest profit per warp comes first
+            return b.profitPerWarpFromStartingSystemSecure.CompareTo(a.profitPerWarpFromStartingSystemSecure); // highest profit per warp comes first
         }
 
-        public static int CompareByProfitPerWarp(SingleTrip a, SingleTrip b)
+        public static int CompareByProfitPerWarpFromStartingSystemShortest(SingleTrip a, SingleTrip b)
         {
-            return b.ProfitPerWarp.CompareTo(a.ProfitPerWarp); // highest profit per warp comes first
+            return b.profitPerWarpFromStartingSystemShortest.CompareTo(a.profitPerWarpFromStartingSystemShortest); // highest profit per warp comes first
+        }
+
+        public static int CompareByProfitPerWarpSecure(SingleTrip a, SingleTrip b)
+        {
+            return b.ProfitPerWarp(true).CompareTo(a.ProfitPerWarp(true)); // highest profit per warp comes first
+        }
+
+        public static int CompareByProfitPerWarpShortest(SingleTrip a, SingleTrip b)
+        {
+            return b.ProfitPerWarp(false).CompareTo(a.ProfitPerWarp(false)); // highest profit per warp comes first
         }
 
         public static int CompareByProfit(SingleTrip a, SingleTrip b)

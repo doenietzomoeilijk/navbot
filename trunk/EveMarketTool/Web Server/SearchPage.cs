@@ -9,11 +9,17 @@ namespace EveMarketTool
 {
     public class SearchPage : Page
     {
+        enum ProfitType
+        {
+            ProfitPerWarpFromStartingSystem,
+            MaxProfitPerWarp,
+            MaxProfit
+        }
+
         string header;
         string footer;
         NameValueCollection input = new NameValueCollection();
         TradeFinder finder;
-        TradeFinder highSecFinder;
         TradeFinderFactory factory;
         float isk = 0.0f;
         float cargo = 0.0f;
@@ -33,8 +39,7 @@ namespace EveMarketTool
 
         public override string Render(string systemName, string charName, string charId, NameValueCollection headers, NameValueCollection query)
         {
-            this.finder = factory.Create(false);
-            this.highSecFinder = factory.Create(true);
+            this.finder = factory.Create();
             this.systemName = systemName;
             input = new NameValueCollection(query);
             if (input["isk"] == null)
@@ -60,7 +65,7 @@ namespace EveMarketTool
 
         string Conversation()
         {
-            if (finder == null || highSecFinder == null)
+            if (finder == null)
                 return "<p>Ok, let's get some market data! Just open the Market and change the range filter to 'Region'. Now pick an item, click on the 'Details' tab and click on the 'Export to file' button. Do this with as many items as you like! I recommend things from the 'Trade Goods' section, like Carbon, Antibodies and Reports. Come back here when you're done!</p>";
             else if (MissingElements() != "")
             {
@@ -126,21 +131,18 @@ namespace EveMarketTool
         {
             string output = "";
 
-            if (finder == null || highSecFinder == null)
+            if (finder == null)
                 return "";
 
             finder.Parameters = new Parameters(isk, cargo, systemName, TripType.SingleTrip);
-            highSecFinder.Parameters = new Parameters(isk, cargo, systemName, TripType.SingleTrip);
 
             if (systemName != null)
             {
                 try
                 {
-                    finder.SortByProfitPerWarpFromStartingSystem();
-                    highSecFinder.SortByProfitPerWarpFromStartingSystem();
                     output += "Looking for quick cash? Here's the trades that'll make us the best short-term profit:";
                     output += "<table>";
-                    output += ShowBestTrips();
+                    output += ShowBestTrips(ProfitType.ProfitPerWarpFromStartingSystem);
                     output += "</table>";
                     output += "<br></br>";
                 }
@@ -153,54 +155,98 @@ namespace EveMarketTool
 
             output += "Fancy a change of scenery? Here's the best trade routes anywhere in the galaxy:";
             output += "<table>";
-            finder.SortByProfitPerWarp();
-            highSecFinder.SortByProfitPerWarp();
-            output += ShowBestTrips();
+            output += ShowBestTrips(ProfitType.MaxProfitPerWarp);
             output += "</table>";
             output += "<br></br>";
 
             output += "Feel like an epic journey? Here's how much profit we could make in one long trip:";
             output += "<table>";
-            finder.SortByProfit();
-            highSecFinder.SortByProfit();
-            output += ShowBestTrips();
+            output += ShowBestTrips(ProfitType.MaxProfit);
             output += "</table>";
             output += "<br></br>";
             return output;
         }
 
-        string ShowBestTrips()
+        string ShowBestTrips(ProfitType type)
         {
-            string output = "";
-            SingleTrip trip = highSecFinder.BestTrip();
-            if (trip != null)
+            List<SingleTrip> secureTrips = null;
+            List<SingleTrip> shortestTrips = null;
+            string output = string.Empty;
+
+            switch (type)
+            {
+                case ProfitType.ProfitPerWarpFromStartingSystem:
+                    finder.SortByProfitPerWarpFromStartingSystem(true);
+                    secureTrips = finder.BestHighSecTrips(2);
+
+                    finder.SortByProfitPerWarpFromStartingSystem(false);
+                    shortestTrips = finder.BestTrips(2);
+                    break;
+
+                case ProfitType.MaxProfitPerWarp:
+                    finder.SortByProfitPerWarp(true);
+                    secureTrips = finder.BestHighSecTrips(2);
+
+                    finder.SortByProfitPerWarp(false);
+                    shortestTrips = finder.BestTrips(2);
+                    break;
+
+                case ProfitType.MaxProfit:
+                    finder.SortByProfit();
+                    secureTrips = finder.BestHighSecTrips(2);
+                    shortestTrips = finder.BestTrips(2);
+                    break;
+            }
+
+            foreach (SingleTrip trip in secureTrips)
+            {
                 output += "<tr><td>" + Info(trip) + "</td></tr>";
-            trip = finder.BestTrip();
-            if (trip != null)
+            }
+
+            foreach (SingleTrip trip in shortestTrips)
+            {
                 output += "<tr><td>" + Info(trip) + "</td></tr>";
+            }
+
             return output;
         }
 
         public string Info(SingleTrip route)
         {
+            return Info(route, SecurityStatus.Level.HighSec);
+        }
+
+        public string Info(SingleTrip route, SecurityStatus.Level startingTrip)
+        {
+            SecurityStatus.Level security = SecurityStatus.Min(startingTrip, route.Security);
             string output = "";
-            if (route.Security > 0.5)
-                output += "High sec: ";
-            else
-                output += "Low sec: ";
             
-            output += FormatIsk(route.Profit) + " profit ";
-            if(isk>0)
-                output += "(" + FormatPercent(route.Profit / isk) + ") "; 
-            output += "taking " + route.Quantity + " " + Info(route.Type) + " from " + Info(route.Source, systemName) + " to " + Info(route.Destination, route.Source.System);
-            output += ", " + FormatIsk(route.ProfitPerWarp) + "/warp, ";
-            output += "limited by " + route.LimitedBy + ", " + route.Security + " sec.";
+            output += FormatIsk(route.Profit) + " profit: " + FormatPercent(route.ProfitMargin) + " margin ";
+            if (isk > 0)
+            {
+                output += "(" + FormatPercent(route.Profit / isk) + ") ";
+            }
+            output += "taking " + route.Quantity.ToString("N0") + " " + Info(route.Type) + " from " + Info(route.Source, systemName) + " to " + Info(route.Destination, route.Source.System);
+            if (security == SecurityStatus.Level.LowSecShortcut)
+            {
+                output += ", " + FormatIsk(route.ProfitPerWarp(true)) + "/warp highsec, ";
+                output += ", " + FormatIsk(route.ProfitPerWarp(false)) + "/warp lowsec, ";
+            }
+            else if (security == SecurityStatus.Level.HighSec)
+            {
+                output += ", " + FormatIsk(route.ProfitPerWarp(true)) + "/warp, ";
+            }
+            else
+            {
+                output += ", " + FormatIsk(route.ProfitPerWarp(false)) + "/warp, ";
+            }
+            output += "limited by " + route.LimitedBy + ", " + security.ToString();
             output += "<br>Items to buy:<br>";
             TradeList purchases = route.GetPurchases();
 
             foreach(Trade trade in purchases)
             {
-                output += trade.ToString() + " (" + trade.Quantity * trade.UnitPrice + " isk)<br>";
+                output += trade.ToString() + " (" + (trade.Quantity * trade.UnitPrice).ToString("N") +")<br>";
             }
             return output;
         }
@@ -242,14 +288,13 @@ namespace EveMarketTool
 
         public string Info(Station station, string here)
         {
-            string result = Info(station);
+            string result = string.Empty;
             if (finder != null && station != null)
             {
                 SolarSystem system = finder.map.GetSystem(here);
                 if (system != null)
                 {
-                    int jumps = finder.map.DistanceBetween(system, station.System);
-                    result += " (" + jumps + " " + Pluralize("jump", "jumps", jumps) + " from here)";
+                    result = Info(station, system, " from here");
                 }
             }
             return result;
@@ -265,11 +310,32 @@ namespace EveMarketTool
 
         public string Info(Station station, SolarSystem from)
         {
+            return Info(station, from, string.Empty);
+        }
+
+        public string Info(Station station, SolarSystem from, string postfix)
+        {
             string result = Info(station);
             if (finder != null && station != null && from != null)
             {
-                int jumps = finder.map.DistanceBetween(from, station.System);
-                result += " (" + jumps + " jumps)";
+                int jumpsSecure = finder.map.DistanceBetween(from, station.System, true);
+                int jumpsShortest = finder.map.DistanceBetween(from, station.System, false);
+                SecurityStatus.Level security = finder.map.RouteSecurity(from, station.System);
+
+                if (security == SecurityStatus.Level.LowSecShortcut)
+                {
+                    //"<FONT COLOR="#cc6600">sample text</FONT>"
+                    result += " <FONT COLOR=\"#00ff33\">(" + jumpsSecure + " " + Pluralize("jump", "jumps", jumpsSecure) + ")</FONT>";
+                    result += "/<FONT COLOR=\"#ff0033\">(" + jumpsShortest + " " + Pluralize("jump", "jumps", jumpsShortest) + ")</FONT>" + postfix;
+                }
+                else if (security == SecurityStatus.Level.HighSec)
+                {
+                    result += " <FONT COLOR=\"#00ff33\">(" + jumpsSecure + " " + Pluralize("jump", "jumps", jumpsSecure) + ")</FONT>" + postfix; ;
+                }
+                else
+                {
+                    result += " <FONT COLOR=\"#ff0033\">(" + jumpsShortest + " " + Pluralize("jump", "jumps", jumpsShortest) + ")</FONT>" + postfix;
+                }
             }
             return result;
         }

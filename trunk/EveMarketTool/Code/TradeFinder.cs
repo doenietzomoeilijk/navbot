@@ -13,6 +13,8 @@ namespace EveMarketTool
         public Map map;
         Market market;
         Parameters parameters;
+        SolarSystem startingSystem;
+
         public Parameters Parameters
         {
             get { return parameters; }
@@ -55,23 +57,43 @@ namespace EveMarketTool
             this.market = market;
         }
 
-        public void SortByProfitPerWarp()
+        public void SortByProfitPerWarp(bool secure)
         {
-            singleTrips.Sort(SingleTrip.CompareByProfitPerWarp);
-            roundTrips.Sort(RoundTrip.CompareByProfitPerWarp);
+            if (secure)
+            {
+                singleTrips.Sort(SingleTrip.CompareByProfitPerWarpSecure);
+                roundTrips.Sort(RoundTrip.CompareByProfitPerWarp);
+            }
+            else
+            {
+                singleTrips.Sort(SingleTrip.CompareByProfitPerWarpShortest);
+                roundTrips.Sort(RoundTrip.CompareByProfitPerWarp);
+            }
         }
 
-        public void SortByProfitPerWarpFromStartingSystem()
+        public void SortByProfitPerWarpFromStartingSystem(bool secure)
         {
             SolarSystem system = map.GetSystem(parameters.StartingSystem);
             if (system == null) throw new CannotFindStartingSystem();
 
-            foreach (SingleTrip s in singleTrips)
+            if ((startingSystem == null) || (startingSystem != system))
             {
-                s.StartingSystem = system;
+                foreach (SingleTrip s in singleTrips)
+                {
+                    s.StartingSystem = system;
+                }
+
+                startingSystem = system;
             }
 
-            singleTrips.Sort(SingleTrip.CompareByProfitPerWarpFromStartingSystem);
+            if (secure)
+            {
+                singleTrips.Sort(SingleTrip.CompareByProfitPerWarpFromStartingSystemSecure);
+            }
+            else
+            {
+                singleTrips.Sort(SingleTrip.CompareByProfitPerWarpFromStartingSystemShortest);
+            }
         }
 
         public void SortByProfit()
@@ -80,12 +102,53 @@ namespace EveMarketTool
             roundTrips.Sort(RoundTrip.CompareByProfit);
         }
 
-        public SingleTrip BestTrip()
+        public List<SingleTrip> BestHighSecTrips(int top)
         {
-            if (singleTrips.Count > 0)
-                return singleTrips[0];
-            else
-                return null;
+            List<SingleTrip> list = new List<SingleTrip>();
+            int count = 0;
+
+            foreach (SingleTrip trip in singleTrips)
+            {
+                bool addRoute = true;
+                if (trip.Security != SecurityStatus.Level.HighSec)
+                {
+                    addRoute = false;
+                }
+                if ((startingSystem != null) && (map.RouteSecurity(startingSystem, trip.Source.System) != SecurityStatus.Level.HighSec))
+                {
+                    addRoute = false;
+                }
+
+                if (addRoute)
+                {
+                    list.Add(trip);
+                    count++;
+                }
+
+                if (count >= top)
+                {
+                    break;
+                }
+            }
+            return list;
+        }
+
+        public List<SingleTrip> BestTrips(int top)
+        {
+            List<SingleTrip> list = new List<SingleTrip>();
+            int count = 0;
+
+            foreach (SingleTrip trip in singleTrips)
+            {
+                list.Add(trip);
+                count++;
+
+                if (count >= top)
+                {
+                    break;
+                }
+            }
+            return list;
         }
 
         private void AddProfitableTrades()
@@ -105,7 +168,7 @@ namespace EveMarketTool
                 }
             }
 
-            singleTrips.Sort(SingleTrip.CompareByProfitPerWarp);
+            //singleTrips.Sort(SingleTrip.CompareByProfitPerWarp);
         }
 
         internal SingleTrip GetBestTradeBetween(Station source, Station destination, ItemType type)

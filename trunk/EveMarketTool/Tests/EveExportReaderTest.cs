@@ -30,7 +30,7 @@ namespace EveMarketTool.Tests
         public void NumbersConverted()
         {
             Assert.AreEqual(1270, reader.ParseId("1270"));
-            Assert.AreEqual(1234.56, reader.ParseNumber("1,234.56"));
+            Assert.AreEqual(1234.56f, reader.ParseNumber("1,234.56"));
         }
 
         [Test]
