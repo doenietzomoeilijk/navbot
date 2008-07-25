@@ -62,12 +62,12 @@ namespace EveMarketTool
             if (secure)
             {
                 singleTrips.Sort(SingleTrip.CompareByProfitPerWarpSecure);
-                roundTrips.Sort(RoundTrip.CompareByProfitPerWarp);
+                roundTrips.Sort(RoundTrip.CompareByProfitPerWarpSecure);
             }
             else
             {
                 singleTrips.Sort(SingleTrip.CompareByProfitPerWarpShortest);
-                roundTrips.Sort(RoundTrip.CompareByProfitPerWarp);
+                roundTrips.Sort(RoundTrip.CompareByProfitPerWarpSecure);
             }
         }
 
@@ -263,7 +263,7 @@ namespace EveMarketTool
                 
                 roundTrips.Add(trip);
             }
-            roundTrips.Sort(RoundTrip.CompareByProfitPerWarp);
+            roundTrips.Sort(RoundTrip.CompareByProfitPerWarpSecure);
         }
     }
 }

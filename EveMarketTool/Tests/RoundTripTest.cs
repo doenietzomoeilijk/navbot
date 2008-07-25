@@ -16,10 +16,10 @@ namespace EveMarketTool.Tests
         {
             ItemDatabase database = TestObjectFactory.CreateItemDatabase();
             Map map = TestObjectFactory.CreateMap();
-            SingleTrip there = new SingleTrip(map, map.GetStation(41), map.GetStation(31));
+            SingleTrip there = new SingleTrip(map, map.GetStation(31), map.GetStation(11));
             there.AddPurchase(new Trade(database.GetItemType("Navitas"), 1000.0f, 1));
             there.Destination.AddItemWanted(new Trade(database.GetItemType("Navitas"), 1100.0f, 1));
-            SingleTrip backAgain = new SingleTrip(map, map.GetStation(31), map.GetStation(41));
+            SingleTrip backAgain = new SingleTrip(map, map.GetStation(11), map.GetStation(31));
             backAgain.AddPurchase(new Trade(database.GetItemType("Kernite"), 300.0f, 50));
             backAgain.Destination.AddItemWanted(new Trade(database.GetItemType("Kernite"), 301.0f, 50));
             trip = new RoundTrip(there, backAgain);
@@ -36,7 +36,7 @@ namespace EveMarketTool.Tests
         [Test]
         public void TestSecurity()
         {
-            Assert.AreEqual(0.7f, trip.Security);
+            Assert.AreEqual(SecurityStatus.Level.LowSecShortcut, trip.Security);
         }
 
         [Test]
@@ -48,15 +48,15 @@ namespace EveMarketTool.Tests
         [Test]
         public void TestProfitPerWarp()
         {
-            Assert.AreEqual(15.0f, trip.ProfitPerWarp);
+            Assert.AreEqual(150.0f / 22.0f, trip.ProfitPerWarp(true));
         }
 
         [Test]
         public void TestCompareByProfitPerWarp()
         {
-            Assert.AreEqual(-1, RoundTrip.CompareByProfitPerWarp(trip, badTrip));
-            Assert.AreEqual(0, RoundTrip.CompareByProfitPerWarp(trip, trip));
-            Assert.AreEqual(1, RoundTrip.CompareByProfitPerWarp(badTrip, trip));
+            Assert.AreEqual(-1, RoundTrip.CompareByProfitPerWarpSecure(trip, badTrip));
+            Assert.AreEqual(0, RoundTrip.CompareByProfitPerWarpSecure(trip, trip));
+            Assert.AreEqual(1, RoundTrip.CompareByProfitPerWarpSecure(badTrip, trip));
         }
     }
 }

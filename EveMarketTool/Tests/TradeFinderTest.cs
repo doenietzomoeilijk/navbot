@@ -150,7 +150,7 @@ namespace EveMarketTool.Tests
 
             float profit = sellForThere + sellForBackAgain - buyForThere - buyForBackAgain;
             Assert.AreEqual(profit, trip.Profit);
-            Assert.AreEqual(profit / 10.0f, trip.ProfitPerWarp);
+            Assert.AreEqual(profit / 10.0f, trip.ProfitPerWarp(true));
         }
 
         [Test]
