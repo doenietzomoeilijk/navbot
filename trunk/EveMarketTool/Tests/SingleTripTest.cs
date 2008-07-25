@@ -17,7 +17,7 @@ namespace EveMarketTool.Tests
         {
             ItemDatabase database = TestObjectFactory.CreateItemDatabase();
             map = TestObjectFactory.CreateMap();
-            trip = new SingleTrip(map, map.GetStation(41), map.GetStation(31));
+            trip = new SingleTrip(map, map.GetStation(11), map.GetStation(31));
             trip.AddPurchase(new Trade(database.GetItemType("Navitas"), 1000.0f, 3));
             trip.Destination.AddItemWanted(new Trade(database.GetItemType("Navitas"), 1100.0f, 3));
 
@@ -39,36 +39,40 @@ namespace EveMarketTool.Tests
         [Test]
         public void TestProfitPerWarp()
         {
-            Assert.AreEqual(300.0f/5.0f, trip.ProfitPerWarp(true));
+            Assert.AreEqual(300.0f / 11.0f, trip.ProfitPerWarp(true));
+            Assert.AreEqual(300.0f / 5.0f, trip.ProfitPerWarp(false));
             Assert.AreEqual(0.0f, empty.Profit);
         }
 
         [Test]
         public void TestProfitPerWarpFrom()
         {
-            Assert.AreEqual(300.0f/10.0f, trip.ProfitPerWarpFrom(map.GetSystem(1), true));
+            Assert.AreEqual(300.0f / 16.0f, trip.ProfitPerWarpFrom(map.GetSystem(3), true));
+            Assert.AreEqual(300.0f / 10.0f, trip.ProfitPerWarpFrom(map.GetSystem(3), false));
             Assert.AreEqual(0.0f, empty.ProfitPerWarpFrom(map.GetSystem(2), true));
         }
 
         [Test]
         public void TestJumps()
         {
-            Assert.AreEqual(2, trip.Jumps(true));
+            Assert.AreEqual(5, trip.Jumps(true));
+            Assert.AreEqual(2, trip.Jumps(false));
             Assert.AreEqual(int.MaxValue, empty.Jumps(true));
         }
 
         [Test]
         public void TestWarps()
         {
-            Assert.AreEqual(5, trip.Warps(true));
+            Assert.AreEqual(11, trip.Warps(true));
+            Assert.AreEqual(5, trip.Warps(false));
             Assert.AreEqual(int.MaxValue, empty.Warps(true));
         }
 
         [Test]
         public void TestSecurity()
         {
-            Assert.AreEqual(0.7f, trip.Security);
-            Assert.AreEqual(0.0f, empty.Security);
+            Assert.AreEqual(SecurityStatus.Level.LowSecShortcut, trip.Security);
+            Assert.AreEqual(SecurityStatus.Level.Isolated, empty.Security);
         }
 
         [Test]

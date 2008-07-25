@@ -119,16 +119,17 @@ namespace EveMarketTool.Tests
         public void TestArchiveOldLogs()
         {
             // copy files from Old Logs to the temporary logs dir
-            string[] oldLogs = Directory.GetFiles(testLogPath + "\\Old Logs\\", "*.txt", System.IO.SearchOption.TopDirectoryOnly);
+            string[] oldLogs = Directory.GetFiles(testLogPath + @"\Old Logs\", "*.txt", System.IO.SearchOption.TopDirectoryOnly);
             foreach (string file in oldLogs)
             {
                 FileInfo info = new FileInfo(file);
-                info.CopyTo(archiveBasePath + "\\" + info.Name);
+                info.CopyTo(archiveBasePath + @"\" + info.Name);
             }
 
             // Create a dummy log whose name indicates it is less than a day old (created at midnight today will do)
             FileInfo newInfo = new FileInfo(oldLogs[0]);
-            string newName = archiveBasePath + "\\" + "MarketTestInput - AutoGen - " + DateTime.Now.Year + "." + DateTime.Now.Month + "." + DateTime.Now.Day + " 000000.txt";
+            DateTime now = TimeZone.CurrentTimeZone.ToUniversalTime(DateTime.Now - TimeSpan.FromHours(6));
+            string newName = archiveBasePath + "\\" + string.Format("MarketTestInput - AutoGen - {0}.{1}.{2} {3}0000.txt", now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
             newInfo.CopyTo(newName);
 
             TradeFinderFactory factory = new TradeFinderFactory(archiveBasePath);

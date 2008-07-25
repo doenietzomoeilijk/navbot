@@ -228,7 +228,7 @@ namespace EveMarketTool
             jumpsSecure = map.DistanceBetween(source.System, destination.System, true);
             jumpsShortest = map.DistanceBetween(source.System, destination.System, false);
 
-            if (jumpsSecure == jumpsShortest)
+            if ((jumpsSecure == jumpsShortest) && (jumpsSecure != int.MaxValue))
             {
                 security = SecurityStatus.Level.HighSec;
             }
@@ -242,7 +242,7 @@ namespace EveMarketTool
             }
             else
             {
-                security = SecurityStatus.Level.LowSecOnly;
+                security = SecurityStatus.Level.Isolated;
             }
         }
 
