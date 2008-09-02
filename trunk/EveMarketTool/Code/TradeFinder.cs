@@ -153,17 +153,21 @@ namespace EveMarketTool
 
         private void AddProfitableTrades()
         {
-            foreach(KeyValuePair<ItemType, StationList> element in market.StationsWithItemForSale)
+            foreach (Station origin in market.StationsWithItemsForSale)
             {
-                ItemType type = element.Key;
-                StationList stationList = element.Value;
-                foreach (Station source in stationList)
+                foreach (Station destination in market.StationsWithItemsWanted)
                 {
-                    foreach (Station destination in market.StationsWithItemWanted[type])
+                    TransactionList profitableTransactions = GetProfitableTransactions(origin, destination);
+
+                    if (profitableTransactions.Count > 0)
                     {
-                        SingleTrip trade = GetBestTradeBetween(source, destination, type);
-                        if (trade.Profit > 0.0f)
-                            singleTrips.Add(trade);
+                        profitableTransactions.Sort(TransactionList.DecreasingProfitPerCargo);
+
+                        SingleTrip trip = GetBestTrade(origin, destination, profitableTransactions);
+                        if (trip.Profit > 0.0f)
+                        {
+                            singleTrips.Add(trip);
+                        }
                     }
                 }
             }
@@ -171,6 +175,212 @@ namespace EveMarketTool
             //singleTrips.Sort(SingleTrip.CompareByProfitPerWarp);
         }
 
+        internal TransactionList GetProfitableTransactions(Station source, Station destination)
+        {
+            TransactionList list = new TransactionList();
+
+            foreach (KeyValuePair<ItemType, TradeList> element in source.ItemsForSale)
+            {
+                if (destination.ItemsWanted.ContainsKey(element.Key))
+                {
+                    // Element 0 should have the highest buy price and lowest sell price respectively
+                    if (destination.ItemsWanted[element.Key][0].UnitPrice > source.ItemsForSale[element.Key][0].UnitPrice)
+                    {
+                        // Get all the transactions for this item and station pair
+                        list.AddRange(GetItemTransactionList(source, destination, element.Key));
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        internal TransactionList GetItemTransactionList(Station source, Station destination, ItemType type)
+        {
+            TransactionList list = new TransactionList();
+
+            Trade[] forSale = source.ItemsForSale[type].ToArray();
+            Trade[] wanted = destination.ItemsWanted[type].ToArray();
+
+            int buyIndex = 0;
+            int sellIndex = 0;
+            int buyAmount = 0;
+            int sellAmount = 0;
+            TransactionItem purchase = null;
+            TransactionItem sale = null;
+            Transaction currentTransaction = null;
+            bool finished = false;
+            int minQtyNeeded = 0;
+
+            while (!finished)
+            {
+                // Source station has more than destination wants
+                if ((forSale[buyIndex].Quantity - buyAmount) > (wanted[sellIndex].Quantity - sellAmount))
+                {
+                    // Set the amount (qty) of the transaction
+                    int amount = (wanted[sellIndex].Quantity - sellAmount); 
+
+                    // Create trades
+                    purchase = new TransactionItem(forSale[buyIndex], amount);
+                    if (minQtyNeeded > 0)
+                    {
+                        minQtyNeeded -= amount;
+                    }
+                    else
+                    {
+                        if (wanted[sellIndex].MinQuantity > amount)
+                        {
+                            sale = new TransactionItem(wanted[sellIndex]);
+                            minQtyNeeded = wanted[sellIndex].MinQuantity - amount; 
+                        }
+                        else
+                        {
+                            sale = new TransactionItem(wanted[sellIndex], amount);
+                        }
+                    }
+
+                    // Set the buy amount up by the amount that can be sold
+                    buyAmount += amount;
+                    // reset the sell amount
+                    sellAmount = 0;
+                    sellIndex++;
+                }
+                    // Source station has less than destination wants
+                else if ((forSale[buyIndex].Quantity - buyAmount) < (wanted[sellIndex].Quantity - sellAmount))
+                {
+                    // Set the amount (qty) of the transaction
+                    int amount = (forSale[buyIndex].Quantity - buyAmount);
+
+                    // Create trades
+                    purchase = new TransactionItem(forSale[buyIndex], amount);
+                    if (minQtyNeeded > 0)
+                    {
+                        minQtyNeeded -= amount;
+                    }
+                    else
+                    {
+                        if (wanted[sellIndex].MinQuantity > amount)
+                        {
+                            sale = new TransactionItem(wanted[sellIndex]);
+                            minQtyNeeded = wanted[sellIndex].MinQuantity - amount; 
+                        }
+                        else
+                        {
+                            sale = new TransactionItem(wanted[sellIndex], amount);
+                        }
+                    }
+
+                    // Set the buy amount up by the amount that can be sold
+                    sellAmount += amount;
+                    // reset the buy amount
+                    buyAmount = 0;
+                    buyIndex++;
+                }
+                else
+                {
+                    // Set the amount (qty) of the transaction
+                    int amount = (wanted[sellIndex].Quantity - sellAmount);
+
+                    // Create trades
+                    purchase = new TransactionItem(forSale[buyIndex], amount);
+                    if (minQtyNeeded > 0)
+                    {
+                        minQtyNeeded -= amount;
+                    }
+                    else
+                    {
+                        if (wanted[sellIndex].MinQuantity > amount)
+                        {
+                            sale = new TransactionItem(wanted[sellIndex]);
+                            minQtyNeeded = wanted[sellIndex].MinQuantity - amount;
+                        }
+                        else
+                        {
+                            sale = new TransactionItem(wanted[sellIndex], amount);
+                        }
+                    }
+
+
+                    // Reset both buy and sell amount
+                    buyAmount = 0;
+                    sellAmount = 0;
+                    buyIndex++;
+                    sellIndex++;
+                }
+
+                if (currentTransaction == null)
+                {
+                    currentTransaction = new Transaction(purchase, sale);
+                }
+                else
+                {
+                    currentTransaction.AddPurchase(purchase);
+                    if (sale != null)
+                    {
+                        currentTransaction.AddSale(sale);
+                    }
+                }
+
+                purchase = null;
+                sale = null;
+
+                if ((wanted.Length <= sellIndex) ||
+                    (forSale.Length <= buyIndex) ||
+                    (wanted[sellIndex].UnitPrice <= forSale[buyIndex].UnitPrice))
+                {
+                    finished = true;
+                }
+
+                // If minimum quantity is achieved, add the transaction
+                if ((finished) ||
+                    ((minQtyNeeded <= 0) && 
+                    (!((wanted[sellIndex].UnitPrice == wanted[Math.Max(sellIndex-1, 0)].UnitPrice) && 
+                    (forSale[buyIndex].UnitPrice == forSale[Math.Max(buyIndex-1, 0)].UnitPrice)))
+                    ))
+                {
+                    if (currentTransaction.Profit >= 0.0f)
+                    {
+                        list.Add(currentTransaction);
+                    }
+                    currentTransaction = null;
+                    minQtyNeeded = 0;
+                }
+
+            }
+
+            return list;
+        }
+
+        internal SingleTrip GetBestTrade(Station source, Station destination, TransactionList tradeList)
+        {
+            SingleTrip trade = new SingleTrip(map, source, destination);
+            float iskLeft = parameters.Isk;
+            float cargoSpaceLeft = parameters.CargoSpace;
+
+            foreach (Transaction t in tradeList)
+            {
+                Transaction addTransaction = t.GetTransactionByLimits(iskLeft, cargoSpaceLeft);
+
+                if (addTransaction != null)
+                {
+                    iskLeft -= addTransaction.Cost;
+                    cargoSpaceLeft -= addTransaction.Volume;
+
+                    trade.AddPurchase(addTransaction);
+                }
+
+                // We'll break out when isk or cargo is low (but not zero), to prevent looking for filler cargo.
+                if ((cargoSpaceLeft == 3.0f) || (iskLeft == 10.0f))
+                {
+                    break;
+                }
+            }
+
+            trade.Compress();
+
+            return trade;
+        }
+        /*
         internal SingleTrip GetBestTradeBetween(Station source, Station destination, ItemType type)
         {
             SingleTrip trade = new SingleTrip(map, source, destination);
@@ -218,6 +428,7 @@ namespace EveMarketTool
 
             return trade;
         }
+         * */
 
         int GetProfitableSaleQuantity(float unitPricePaid, Trade[] wanted, int quantityAlreadyBought)
         {

@@ -14,6 +14,11 @@ namespace EveMarketTool.Tests.Mock_Objects
         {
             SolarSystemsById.Add(s.Id, s);
             SolarSystemsByName.Add(s.Name, s);
+            if (!RegionsById.ContainsKey(s.Region.Id))
+            {
+                RegionsById.Add(s.Region.Id, s.Region);
+            }
+            s.Region.Systems.Add(s);
         }
     }
 }

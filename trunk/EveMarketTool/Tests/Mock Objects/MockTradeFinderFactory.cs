@@ -14,6 +14,7 @@ namespace EveMarketTool.Tests.Mock_Objects
         Market market;
         string logFilePath;
         Parameters parameters;
+        TradeFinder finder;
 
         public int ArchiveCalls = 0;
         public int ArchiveOldCalls = 0;
@@ -30,10 +31,15 @@ namespace EveMarketTool.Tests.Mock_Objects
 
         public override TradeFinder Create()
         {
-            if (map != null)
-                return Create(map, market, TestObjectFactory.TestDirectory + "Logs", parameters);
-            else 
-                return null;
+            if (finder == null)
+            {
+                if (map != null)
+                {
+                    finder = Create(map, market, TestObjectFactory.TestDirectory + "Logs", parameters);
+                }
+            }
+
+            return finder;
         }
 
         public override string[] ReportList()

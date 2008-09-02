@@ -32,39 +32,38 @@ namespace EveMarketTool.Tests
         [Test]
         public void TestStationsWithItemForSale()
         {
-            // Kernite is sold at every station but one
-            StationList stations = market.StationsWithItemForSale[kernite];
-            Assert.AreEqual(map.StationList.Count -1, stations.Count);
+            // Some item is for sale at 8 stations
+            StationList stations = market.StationsWithItemsForSale;
+            Assert.AreEqual(8, stations.Count);
             foreach (Station s in map.StationList)
             {
-                if(s.ItemsForSale.ContainsKey(kernite))
+                if (s.ItemsForSale.ContainsKey(kernite))
+                {
                     Assert.Contains(s, stations);
+                }
             }
 
-            // The Navitas is sold at three stations - 11, 12 and 41
-            stations = market.StationsWithItemForSale[navitas];
-            Assert.AreEqual(3, stations.Count);
-            Assert.Contains(map.GetStation(11), stations);
-            Assert.Contains(map.GetStation(12), stations);
-            Assert.Contains(map.GetStation(41), stations);
         }
 
         [Test]
         public void TestStationsWithItemWanted()
         {
-            // Kernite is wanted at every station but one
-            StationList stations = market.StationsWithItemWanted[kernite];
-            Assert.AreEqual(map.StationList.Count - 1, stations.Count);
+            // Some item is wanted at all 9 stations (due to regional sale areas)
+            StationList stations = market.StationsWithItemsWanted;
+            Assert.AreEqual(9, stations.Count);
             foreach (Station s in map.StationList)
             {
                 if (s.ItemsWanted.ContainsKey(kernite))
-                    Assert.Contains(s, stations);
+                {
+                    bool itemFound = stations.Contains(s);
+                    if (!itemFound)
+                    {
+                        itemFound = s.System.ItemsWanted.ContainsKey(kernite);
+                    }
+                    Assert.IsTrue(itemFound);
+                }
             }
-
-            // The Navitas is wanted at one station - 31
-            stations = market.StationsWithItemWanted[navitas];
-            Assert.AreEqual(1, stations.Count);
-            Assert.Contains(map.GetStation(31), stations);
         }
+
     }
 }

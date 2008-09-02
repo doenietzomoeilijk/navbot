@@ -8,6 +8,7 @@ namespace EveMarketTool
     {
         Dictionary<string, SolarSystem> solarSystemsByName;
         Dictionary<int, SolarSystem> solarSystemsById;
+        Dictionary<int, Region> regionsById;
         Dictionary<int, Station> stationsById;
 
         public Map()
@@ -15,6 +16,7 @@ namespace EveMarketTool
             SolarSystemsReader systemsReader = new SolarSystemsReader();
             solarSystemsByName = systemsReader.SolarSystemsByName;
             solarSystemsById = systemsReader.SolarSystemsById;
+            regionsById = systemsReader.RegionsById;
 
             SolarSystemJumpsReader jumpsReader = new SolarSystemJumpsReader(this);
             StationReader stationReader = new StationReader(this);
@@ -29,6 +31,15 @@ namespace EveMarketTool
             solarSystemsByName = systemsReader.SolarSystemsByName;
             solarSystemsById = systemsReader.SolarSystemsById;
             stationsById = stationReader.StationsById;
+            regionsById = systemsReader.RegionsById;
+        }
+
+        public Region GetRegion(int id)
+        {
+            if (regionsById.ContainsKey(id))
+                return regionsById[id];
+            else
+                return null;
         }
 
         public SolarSystem GetSystem(int id)
@@ -68,6 +79,24 @@ namespace EveMarketTool
             get
             {
                 return new List<Station>(stationsById.Values);
+            }
+        }
+
+        public void ClearMarketData()
+        {
+            foreach (Region r in regionsById.Values)
+            {
+                r.ClearMarketData();
+            }
+
+            foreach (SolarSystem s in SystemList)
+            {
+                s.ClearMarketData();
+            }
+
+            foreach (Station st in StationList)
+            {
+                st.ClearMarketData();
             }
         }
 

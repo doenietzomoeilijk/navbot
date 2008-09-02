@@ -41,6 +41,8 @@ namespace EveMarketTool
             if (logs.Length == 0)
                 return null;
 
+            map.ClearMarketData();
+
             foreach (string s in logs)
             {
                 market.ReadFromFullPath(s);

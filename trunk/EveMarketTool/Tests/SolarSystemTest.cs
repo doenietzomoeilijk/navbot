@@ -21,10 +21,11 @@ namespace EveMarketTool.Tests
         [SetUp]
         public void TestCaseSetUp()
         {
-            one = new SolarSystem(1, "One", 1.0f);
-            two = new SolarSystem(2, "Two", 0.9f);
-            three = new SolarSystem(3, "Three", 0.8f);
-            zero = new SolarSystem(0, "Zero", 0.0f);
+            Region r = new Region(1);
+            one = new SolarSystem(1, "One", r, 1.0f);
+            two = new SolarSystem(2, "Two", r, 0.9f);
+            three = new SolarSystem(3, "Three", r, 0.8f);
+            zero = new SolarSystem(0, "Zero", r, 0.0f);
             one.AddGateTo(two);
             two.AddGateTo(one);
             two.AddGateTo(three);

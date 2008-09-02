@@ -15,7 +15,7 @@
     <ManifestCertificateThumbprint>889603279456D6D32A38DFEEE25FE83D19078D98</ManifestCertificateThumbprint>
     <ManifestKeyFile>NavBot_1_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetZone>LocalIntranet</TargetZone>
     <PublishUrl>C:\Users\Mark\Documents\My Code\NavBot\Publish\</PublishUrl>

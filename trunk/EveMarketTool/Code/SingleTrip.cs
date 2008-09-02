@@ -4,24 +4,19 @@ using System.Text;
 
 namespace EveMarketTool
 {
-    public enum LimitingFactor { Availability, Isk, CargoSpace };
+    public enum LimitingFactor { Availability, Demand, Isk, CargoSpace };
 
     public class SingleTrip
     {
-        private TradeList purchases = new TradeList();
-        public void AddPurchase(Trade t)
+        private TransactionList purchases = new TransactionList();
+        public void AddPurchase(Transaction t)
         {
             purchases.Add(t);
         }
 
-        public TradeList GetPurchases()
+        public TransactionList GetPurchases()
         {
             return purchases;
-        }
-
-        public ItemType Type
-        {
-            get { return purchases[0].Type; }
         }
 
         private float profitPerWarpFromStartingSystemSecure;
@@ -76,9 +71,12 @@ namespace EveMarketTool
             {
                 if (purchases.Count == 0) return 0.0f; // no trades = no profit
 
-                ItemType type = purchases[0].Type;
-                float saleValue = destination.GetSaleValueOf(type, Quantity);
-                return saleValue - Cost;
+                float profit = 0.0f;
+                foreach (Transaction t in purchases)
+                {
+                    profit += t.Profit;
+                }
+                return profit;
             }
         }
 
@@ -105,28 +103,11 @@ namespace EveMarketTool
                 if (purchases.Count == 0) return 0.0f; // no trades = no cost
 
                 float cost = 0.0f;
-                ItemType type = purchases[0].Type;
-                foreach (Trade t in purchases)
+                foreach (Transaction t in purchases)
                 {
-                    cost += t.UnitPrice * t.Quantity;
+                    cost += t.Cost;
                 }
                 return cost;
-            }
-        }
-
-        public int Quantity
-        {
-            get
-            {
-                if (purchases.Count == 0) return 0; // no trades = no quantity
-
-                int quantity = 0;
-                ItemType type = purchases[0].Type;
-                foreach (Trade t in purchases)
-                {
-                    quantity += t.Quantity;
-                }
-                return quantity;
             }
         }
 
@@ -153,6 +134,31 @@ namespace EveMarketTool
             }
         }
 
+        public void Compress()
+        {
+            int i = 0;
+            int j = 0;
+
+            while (i < purchases.Count)
+            {
+                j = i + 1;
+                while (j < purchases.Count)
+                {
+                    if (purchases[i].Type == purchases[j].Type)
+                    {
+                        purchases[i].Combine(purchases[j]);
+                        purchases.Remove(purchases[j]);
+                    }
+                    else
+                    {
+                        j++;
+                    }
+                }
+
+                i++;
+            }
+        }
+
         public float ProfitPerWarp(bool secure)
         {
             int warps = Warps(secure);
@@ -164,15 +170,6 @@ namespace EveMarketTool
                 return Profit;
             else
                 return Profit / warps;
-        }
-
-        public ItemType ItemType
-        {
-            get
-            {
-                if (purchases.Count == 0) return null;
-                return purchases[0].Type;
-            }
         }
 
         private int jumpsSecure;
@@ -198,6 +195,34 @@ namespace EveMarketTool
             }
         }
 
+        public int Quantity
+        {
+            get
+            {
+                int count = 0;
+                foreach (Transaction t in purchases)
+                {
+                    count += t.Units;
+                }
+
+                return count;
+            }
+        }
+
+        public float Volume
+        {
+            get
+            {
+                float volume = 0;
+                foreach (Transaction t in purchases)
+                {
+                    volume += t.Volume;
+                }
+
+                return volume;
+            }
+        }
+
         Map map;
         Station source;
         public Station Source
@@ -209,14 +234,6 @@ namespace EveMarketTool
         public Station Destination
         {
             get { return destination; }
-        }
-
-        private LimitingFactor limitedBy;
-
-        public LimitingFactor LimitedBy
-        {
-            get { return limitedBy; }
-            set { limitedBy = value; }
         }
 
         public SingleTrip(Map map, Station source, Station destination)
@@ -246,23 +263,33 @@ namespace EveMarketTool
             }
         }
 
-        public string TypeName
+        public string ListPurchases()
         {
-            get
+            string output = string.Empty;
+
+            foreach (Transaction t in purchases)
             {
-                ItemType type = this.ItemType;
-                string typeName;
-                if (type == null)
-                    typeName = "Nothing";
-                else
-                    typeName = type.Name;
-                return typeName;
+                output += t.ListPurchases();
             }
+
+            return output;
+        }
+
+        public string ListSales()
+        {
+            string output = string.Empty;
+
+            foreach (Transaction t in purchases)
+            {
+                output += t.ListSales();
+            }
+
+            return output;
         }
 
         public string ToString(bool secure)
         {
-            return TypeName + " from " + source.Name + " to " + destination.Name + "(" + Jumps(secure) + " jumps)" + " for " + Profit + " isk profit (" + ProfitPerWarp(secure) + " isk/warp)";
+            return "Nothing"; // TypeName + " from " + source.Name + " to " + destination.Name + "(" + Jumps(secure) + " jumps)" + " for " + Profit + " isk profit (" + ProfitPerWarp(secure) + " isk/warp)";
         }
 
         public static int CompareByProfitPerWarpFromStartingSystemSecure(SingleTrip a, SingleTrip b)

@@ -53,7 +53,7 @@
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="nunit.framework, Version=2.4.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -63,19 +63,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Code\Constants.cs" />
+    <Compile Include="Code\ItemList.cs" />
+    <Compile Include="Code\Map.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Code\Region.cs" />
     <Compile Include="Code\ReportInfo.cs" />
+    <Compile Include="Code\SecurityStatus.cs" />
     <Compile Include="Code\TradeFinderFactory.cs" />
     <Compile Include="Code\CSVFileReader.cs" />
     <Compile Include="Code\EveExportReader.cs" />
     <Compile Include="Code\ItemType.cs" />
-    <Compile Include="Code\Map.cs" />
     <Compile Include="Code\Market.cs" />
     <Compile Include="Code\ItemDatabase.cs" />
     <Compile Include="Code\RoundTrip.cs" />
-    <Compile Include="Code\RoundTripDisplayItem.cs">
-    </Compile>
     <Compile Include="Code\SingleTrip.cs" />
     <Compile Include="Code\TradeFinder.cs" />
+    <Compile Include="Code\Transaction.cs" />
+    <Compile Include="Code\TransactionItem.cs" />
+    <Compile Include="Code\TransactionItemList.cs" />
+    <Compile Include="Code\TransactionList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -107,8 +114,7 @@
     <Compile Include="Code\StationReader.cs" />
     <Compile Include="Code\Trade.cs" />
     <Compile Include="Code\TradeList.cs" />
-    <Compile Include="Code\SingleTripDisplayItem.cs">
-    </Compile>
+    <Compile Include="Tests\BugCheck-Coolant.cs" />
     <Compile Include="Tests\CSVFileReaderTest.cs" />
     <Compile Include="Tests\EveExportReaderTest.cs" />
     <Compile Include="Tests\ItemDatabaseTest.cs" />
@@ -132,6 +138,8 @@
     <Compile Include="Tests\TestObjectFactory.cs" />
     <Compile Include="Tests\TradeFinderFactoryTest.cs" />
     <Compile Include="Tests\TradeListTest.cs" />
+    <Compile Include="Tests\TransactionItemTest.cs" />
+    <Compile Include="Tests\TransactionTest.cs" />
     <Compile Include="Tests\WebUtils.cs" />
     <Compile Include="Tests\WelcomePageTest.cs" />
     <Compile Include="Web Server\Page.cs" />
@@ -183,6 +191,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Tests\Logs\Special Logs\MarketTestInput - Kernite - with-dashes - like - this - 2007.01.27 172658.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Tests\Logs\Special Logs\Coolant\Domain-Coolant-2008.09.02 050649.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tests\NoLogs\" />
