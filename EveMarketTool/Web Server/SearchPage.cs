@@ -23,6 +23,7 @@ namespace EveMarketTool
         TradeFinderFactory factory;
         float isk = 0.0f;
         float cargo = 0.0f;
+        int accounting = 0;
         string systemName;
 
         public SearchPage(TradeFinderFactory factory)
@@ -60,6 +61,9 @@ namespace EveMarketTool
                 }
             }
 
+            // We should set the accounting selection to be based on the past values  - need to look up how to do this.
+            //input["accounting"] = (int)Application.UserAppDataRegistry.GetValue("LastKnownAccounting");
+
             return "<html><title>NavBot</title><body>" + ReplaceVariables(header, input) + Conversation() + "</body></html>";
         }
 
@@ -81,6 +85,7 @@ namespace EveMarketTool
                 cargo = float.Parse(input["cargo"]);
                 Application.UserAppDataRegistry.SetValue("LastKnownIsk", isk.ToString());
                 Application.UserAppDataRegistry.SetValue("LastKnownCargoSpace", cargo.ToString());
+                Application.UserAppDataRegistry.SetValue("LastKnownAccounting", accounting);
                 return "<p>" + Routes() + "</p>" + footer;
             }
         }
@@ -134,7 +139,7 @@ namespace EveMarketTool
             if (finder == null)
                 return "";
 
-            finder.Parameters = new Parameters(isk, cargo, systemName, TripType.SingleTrip);
+            finder.Parameters = new Parameters(isk, cargo, systemName, TripType.SingleTrip, accounting);
 
             if (systemName != null)
             {
@@ -226,7 +231,8 @@ namespace EveMarketTool
             {
                 output += "(" + FormatPercent(route.Profit / isk) + ") ";
             }
-            output += "taking " + route.Quantity.ToString("N0") + " " + Info(route.Type) + " from " + Info(route.Source, systemName) + " to " + Info(route.Destination, route.Source.System);
+            output += " from " + Info(route.Source, systemName) + " to " + Info(route.Destination, route.Source.System);
+
             if (security == SecurityStatus.Level.LowSecShortcut)
             {
                 output += ", " + FormatIsk(route.ProfitPerWarp(true)) + "/warp highsec, ";
@@ -240,20 +246,14 @@ namespace EveMarketTool
             {
                 output += ", " + FormatIsk(route.ProfitPerWarp(false)) + "/warp, ";
             }
-            output += "limited by " + route.LimitedBy + ", " + security.ToString();
-            output += "<br>Items to buy:<br>";
-            TradeList purchases = route.GetPurchases();
+            output += string.Format("<br>Total Cost: {0:N1} isk;  Total Cargo: {1} m3", route.Cost, route.Volume);
 
-            foreach(Trade trade in purchases)
-            {
-                output += trade.ToString() + " (" + (trade.Quantity * trade.UnitPrice).ToString("N") +")<br>";
-            }
+            output += "<br>Purchases:<br>";
+            output += route.ListPurchases();
+            output += "Sales:<br>";
+            output += route.ListSales();
+
             return output;
-        }
-
-        public string Info(ItemType item)
-        {
-            return "<a href=\"showinfo:" + item.Id + "\">" + item.Name + "</a>";
         }
 
         public string FormatIsk(float num)

@@ -32,12 +32,23 @@ namespace EveMarketTool
             get { return trip; }
         }
 
-        public Parameters(float isk, float cargoSpace, string startingSystem, TripType trip)
+        static private float taxRate = 0.01f;
+        static public float TaxRate
+        {
+            get { return taxRate; }
+        }
+
+        public Parameters(float isk, float cargoSpace, string startingSystem, TripType trip): this(isk, cargoSpace, startingSystem, trip, 0)
+        {
+        }
+
+        public Parameters(float isk, float cargoSpace, string startingSystem, TripType trip, int accountingLevel)
         {
             this.isk = isk;
             this.cargoSpace = cargoSpace;
             this.startingSystem = startingSystem;
             this.trip = trip;
+            taxRate = 0.01f - (accountingLevel * 0.001f);
         }
     }
 }

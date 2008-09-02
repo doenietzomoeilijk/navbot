@@ -18,6 +18,12 @@ namespace EveMarketTool
             get { return name; }
         }
 
+        private Region region;
+        public Region Region
+        {
+            get { return region; }
+        }
+
         private float securityValue;
 
         public float Security
@@ -43,11 +49,50 @@ namespace EveMarketTool
             get { return signpostShortest; }
         }
 
-        public SolarSystem(int itemId, string itemName, float security)
+        private StationList stations = new StationList();
+        public StationList Stations
+        {
+            get { return stations; }
+        }
+
+        private Dictionary<ItemType, TradeList> itemsWanted = new Dictionary<ItemType, TradeList>();
+        private Dictionary<ItemType, TradeList> itemsWantedReturn = null;
+        public Dictionary<ItemType, TradeList> ItemsWanted
+        {
+            get
+            {
+                if (itemsWantedReturn == null)
+                {
+                    itemsWantedReturn = new Dictionary<ItemType, TradeList>();
+                    foreach (KeyValuePair<ItemType, TradeList> element in itemsWanted)
+                    {
+                        itemsWantedReturn.Add(element.Key, element.Value);
+                    }
+
+                    foreach (KeyValuePair<ItemType, TradeList> element in region.ItemsWanted)
+                    {
+                        if (!itemsWantedReturn.ContainsKey(element.Key))
+                        {
+                            itemsWantedReturn.Add(element.Key, element.Value);
+                        }
+                        else
+                        {
+                            itemsWantedReturn[element.Key].AddRange(element.Value);
+                            itemsWantedReturn[element.Key].Sort(TradeList.DecreasingUnitPrice);
+                        }
+                    }
+                }
+
+                return itemsWantedReturn;
+            }
+        }
+
+        public SolarSystem(int itemId, string itemName, Region region, float security)
         {
             id = itemId;
             name = itemName;
             securityValue = security;
+            this.region = region;
             signpostShortest[this] = new SignpostEntry(null, 0);
             if (security >= 0.45f)
             {
@@ -55,8 +100,21 @@ namespace EveMarketTool
             }
         }
 
+        public void AddItemWanted(Trade t)
+        {
+            if (!itemsWanted.ContainsKey(t.Type))
+            {
+                itemsWanted.Add(t.Type, new TradeList());
+            }
+
+            itemsWanted[t.Type].Add(t);
+            itemsWanted[t.Type].Sort(TradeList.DecreasingUnitPrice);
+        }
+
         public void ClearMarketData()
         {
+            itemsWantedReturn = null;
+            itemsWanted.Clear();
         }
 
         public override string ToString()

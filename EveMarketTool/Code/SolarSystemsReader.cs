@@ -20,13 +20,19 @@ namespace EveMarketTool
             ReadFromResource("Data.dbo_mapSolarSystems.csv");
     	}
 
-        Dictionary<int, SolarSystem> solarSystems = new Dictionary<int, SolarSystem>();
+        Dictionary<string, SolarSystem> solarSystemsByName = new Dictionary<string, SolarSystem>();
         public Dictionary<string, SolarSystem> SolarSystemsByName
         {
             get { return solarSystemsByName; }
         }
 
-        Dictionary<string, SolarSystem> solarSystemsByName = new Dictionary<string, SolarSystem>();
+        Dictionary<int, Region> regions = new Dictionary<int, Region>();
+        public Dictionary<int, Region> RegionsById
+        {
+            get { return regions; }
+        }
+
+        Dictionary<int, SolarSystem> solarSystems = new Dictionary<int, SolarSystem>();
         public Dictionary<int, SolarSystem> SolarSystemsById
         {
             get { return solarSystems; }
@@ -37,9 +43,24 @@ namespace EveMarketTool
             int itemId = ParseId(fields["solarSystemID"]);
             string itemName = fields["solarSystemName"];
             float security = ParseNumber(fields["security"]);
-            SolarSystem s = new SolarSystem(itemId, itemName, security);
+            int regionId = ParseId(fields["regionID"]);
+            Region r = null;
+
+            if (regions.ContainsKey(regionId))
+            {
+                r = regions[regionId];
+            }
+            if (r == null)
+            {
+                r = new Region(regionId);
+                regions.Add(regionId, r);
+            }
+
+            SolarSystem s = new SolarSystem(itemId, itemName, r, security);
+            r.Systems.Add(s);
             solarSystems[itemId] = s;
             solarSystemsByName[itemName] = s;
+
         }
     }
 }

@@ -15,7 +15,7 @@ namespace EveMarketTool.Tests
         SearchPage page;
         string charName = "Jameson";
         string charId = "9816250";
-        string system = "Line1";
+        string system = "HighSec1";
         NameValueCollection trustedHeaders;
         NameValueCollection query;
 

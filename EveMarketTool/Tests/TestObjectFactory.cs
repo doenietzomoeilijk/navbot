@@ -24,18 +24,19 @@ namespace EveMarketTool.Tests
              *     |                                                                             |
              *     \-----------------------------------------------------------------------------/
              */
+            Region r = new Region(1);
 
-            SolarSystem highSec1 = new SolarSystem(1, "HighSec1", 0.93f);
-            SolarSystem highSec2 = new SolarSystem(2, "HighSec2", 1.0f);
-            SolarSystem highSec3 = new SolarSystem(3, "HighSec3", 0.45f);
-            SolarSystem highSec4 = new SolarSystem(4, "HighSec4", 0.59f);
-            SolarSystem highSec5 = new SolarSystem(5, "HighSec5", 0.65f);
-            SolarSystem highSec6 = new SolarSystem(6, "HighSec6", 0.78f);
-            SolarSystem deadEnd1 = new SolarSystem(7, "DeadEnd1", 0.9f);
-            SolarSystem lowSec1 = new SolarSystem(8, "LowSec1", 0.44f);
-            SolarSystem lowSec2 = new SolarSystem(9, "LowSec2", 0.34f);
-            SolarSystem highSecIsolated1 = new SolarSystem(10, "HighSecIsolated", 0.78f);
-            SolarSystem isolated1 = new SolarSystem(11, "Isolated1", 0.78f);
+            SolarSystem highSec1 = new SolarSystem(1, "HighSec1", r, 0.93f);
+            SolarSystem highSec2 = new SolarSystem(2, "HighSec2", r, 1.0f);
+            SolarSystem highSec3 = new SolarSystem(3, "HighSec3", r, 0.45f);
+            SolarSystem highSec4 = new SolarSystem(4, "HighSec4", r, 0.59f);
+            SolarSystem highSec5 = new SolarSystem(5, "HighSec5", r, 0.65f);
+            SolarSystem highSec6 = new SolarSystem(6, "HighSec6", r, 0.78f);
+            SolarSystem deadEnd1 = new SolarSystem(7, "DeadEnd1", r, 0.9f);
+            SolarSystem lowSec1 = new SolarSystem(8, "LowSec1", r, 0.44f);
+            SolarSystem lowSec2 = new SolarSystem(9, "LowSec2", r, 0.34f);
+            SolarSystem highSecIsolated1 = new SolarSystem(10, "HighSecIsolated", r, 0.78f);
+            SolarSystem isolated1 = new SolarSystem(11, "Isolated1", r, 0.78f);
 
             GateBetween(highSec1, highSec2);
             GateBetween(highSec2, highSec3);
