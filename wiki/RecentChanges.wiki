@@ -1,0 +1,13 @@
+#summary Recent Changes in NavBot.
+#labels Featured
+
+= r13, r14, r15 =
+
+Features added:
+  * Trades are calculated on a station to station basis.  This means we only look at items between those stations which are profitable, and we also look to fill the hold with multiple item types, in order of profitability per cargo unit.
+  * Security Status - Two routes are calculated for each starting and destination systems.  A fastest route, and a secure route.  If the secure route has the same # of jumps as the fastest route - it is a high-sec trip.  If the secure route is longer than the fastest route, it is a low-sec shortcut.  If the secure route is not traversable - it is low-sec only.  Each of these are displayed in the browser in the number of jumps area.  Green for # of jumps is high-sec, red is low-sec.  Occasionally you will see something like (8 jumps)/(3 jumps) - where the 8 is green and the 3 is red.  This is indicating that the route would take 8 jumps through high-sec, and 3 through lowsec.  Profit per warp is calculated for each as well.
+  * Tax information is calcuated, and profit figured based on amount of tax.
+
+Enhancements:
+  * The map is saved between requests.  This prevents the program from having to recalculate the routing from one point to another
+  * Modified the trip finder to return a variable number of trips.  Currently, it is displaying 2 trips of each type, however that has complicated the display a bit.  This is something that should be fixed in the next pass of changes.
