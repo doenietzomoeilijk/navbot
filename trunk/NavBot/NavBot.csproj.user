@@ -19,7 +19,6 @@
     </UpdateUrlHistory>
     <BootstrapperUrlHistory>
     </BootstrapperUrlHistory>
-    <ApplicationRevision>12</ApplicationRevision>
     <FallbackCulture>en-US</FallbackCulture>
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
   </PropertyGroup>
