@@ -7,7 +7,7 @@ namespace EveMarketTool.Tests
 {
     class TestObjectFactory
     {
-        public static string TestDirectory = @"C:\dev\NavBotMain\EveMarketTool\Tests\";
+        public static string TestDirectory = "..\\..\\Tests\\";
 
         public static ItemDatabase CreateItemDatabase()
         {

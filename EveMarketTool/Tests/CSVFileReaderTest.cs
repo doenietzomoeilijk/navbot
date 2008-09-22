@@ -48,7 +48,7 @@ namespace EveMarketTool.Tests
 
         public CSVFileReaderTestWrapper(string inputFile)
         {
-            ReadFromFullPath(@"C:\dev\NavBot\EveMarketTool\Tests\" + inputFile);
+            ReadFromFullPath("..\\..\\Tests\\" + inputFile);
         }
 
         protected override void InterpretRow(Dictionary<string, string> fields)
