@@ -11,7 +11,7 @@ namespace EveMarketTool
         public SolarSystemJumpsReader(Map map)
         {
             this.map = map;
-            ReadFromResource("Data.dbo_mapSolarSystemJumps.csv");
+            ReadFromResource("Data.dbo_mapSolarSystemJumps.csv", "\r\n");
         }
 
         protected override void InterpretRow(Dictionary<string, string> fields)

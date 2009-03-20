@@ -19,9 +19,9 @@ namespace EveMarketTool
             ReadFromFullPath(dataDir + filename);
         }
 
-        void ReadFromString(string text)
+        void ReadFromString(string text, string carriage)
         {
-            string[] lines = text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            string[] lines = text.Split(new string[] { carriage }, StringSplitOptions.RemoveEmptyEntries);
             string[] header = ReadWords(lines[0]);
 
             Dictionary<string, string> dict = new Dictionary<string, string>();
@@ -40,15 +40,15 @@ namespace EveMarketTool
         public void ReadFromFullPath(string filename)
         {
             string text = System.IO.File.ReadAllText(filename);
-            ReadFromString(text);
+            ReadFromString(text, "\r\n");
         }
 
-        public void ReadFromResource(string filename)
+        public void ReadFromResource(string filename, string carriage)
         {
             Assembly a = Assembly.GetExecutingAssembly();
             System.IO.StreamReader s = new System.IO.StreamReader(a.GetManifestResourceStream("EveMarketTool." + filename));
             string text = s.ReadToEnd();
-            ReadFromString(text);
+            ReadFromString(text, carriage);
         }
 
         /// Convert Eve ID numbers from input files (they are sometimes "null", used to contain a '.' as thousand seperator too)

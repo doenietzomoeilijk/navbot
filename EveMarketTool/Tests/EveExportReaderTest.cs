@@ -56,7 +56,7 @@ namespace EveMarketTool.Tests
 
         public EveExportReaderTestWrapper(string inputFile)
         {
-            ReadFromResource("Tests." + inputFile);
+            ReadFromResource("Tests." + inputFile, "\r\n");
         }
 
         protected override void InterpretRow(Dictionary<string, string> fields)

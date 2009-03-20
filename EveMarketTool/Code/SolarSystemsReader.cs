@@ -17,7 +17,7 @@ namespace EveMarketTool
 
         public SolarSystemsReader()
     	{
-            ReadFromResource("Data.dbo_mapSolarSystems.csv");
+            ReadFromResource("Data.dbo_mapSolarSystems.csv", "\r\n");
     	}
 
         Dictionary<string, SolarSystem> solarSystemsByName = new Dictionary<string, SolarSystem>();

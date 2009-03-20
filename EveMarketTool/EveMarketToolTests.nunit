@@ -1,7 +1,7 @@
 ﻿<NUnitProject>
   <Settings activeconfig="Debug" />
   <Config name="Debug" binpathtype="Auto">
-    <assembly path="bin\Release\EveMarketTool.exe" />
+    <assembly path="bin\Debug\EveMarketTool.dll" />
   </Config>
   <Config name="Release" binpathtype="Auto" />
 </NUnitProject>

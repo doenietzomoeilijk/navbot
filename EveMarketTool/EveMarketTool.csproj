@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -9,23 +10,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EveMarketTool</RootNamespace>
     <AssemblyName>EveMarketTool</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkSubset>
+    </TargetFrameworkSubset>
     <StartupObject>
     </StartupObject>
-    <StartAction>Program</StartAction>
-    <StartProgram>C:\Programme\NUnit 2.4\bin\nunit.exe</StartProgram>
-    <ManifestCertificateThumbprint>689EB92C6DF23F8E5D403CCAE8F915C8C93A77FE</ManifestCertificateThumbprint>
-    <ManifestKeyFile>EveMarketTool_TemporaryKey.pfx</ManifestKeyFile>
-    <GenerateManifests>false</GenerateManifests>
-    <SignManifests>true</SignManifests>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <TargetZone>LocalIntranet</TargetZone>
-    <SignAssembly>false</SignAssembly>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <PublishUrl>C:\Dokumente und Einstellungen\Mark\Eigene Dateien\My Code\EveMarketTool\Publish\</PublishUrl>
+    <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -35,8 +26,9 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -48,7 +40,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -57,72 +48,49 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.4.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
   <ItemGroup>
     <Compile Include="Code\Constants.cs" />
-    <Compile Include="Code\Map.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Code\Region.cs" />
-    <Compile Include="Code\ReportInfo.cs" />
-    <Compile Include="Code\SecurityStatus.cs" />
-    <Compile Include="Code\TradeFinderFactory.cs" />
     <Compile Include="Code\CSVFileReader.cs" />
     <Compile Include="Code\EveExportReader.cs" />
-    <Compile Include="Code\ItemType.cs" />
-    <Compile Include="Code\Market.cs" />
     <Compile Include="Code\ItemDatabase.cs" />
+    <Compile Include="Code\ItemType.cs" />
+    <Compile Include="Code\Map.cs" />
+    <Compile Include="Code\Market.cs" />
+    <Compile Include="Code\Parameters.cs" />
+    <Compile Include="Code\Region.cs" />
+    <Compile Include="Code\ReportInfo.cs" />
     <Compile Include="Code\RoundTrip.cs" />
+    <Compile Include="Code\SecurityStatus.cs" />
+    <Compile Include="Code\Signpost.cs" />
+    <Compile Include="Code\SignpostEntry.cs" />
     <Compile Include="Code\SingleTrip.cs" />
+    <Compile Include="Code\SolarSystem.cs" />
+    <Compile Include="Code\SolarSystemJumpsReader.cs" />
+    <Compile Include="Code\SolarSystemList.cs" />
+    <Compile Include="Code\SolarSystemsReader.cs" />
+    <Compile Include="Code\Station.cs" />
+    <Compile Include="Code\StationList.cs" />
+    <Compile Include="Code\StationReader.cs" />
+    <Compile Include="Code\Trade.cs" />
     <Compile Include="Code\TradeFinder.cs" />
+    <Compile Include="Code\TradeFinderFactory.cs" />
+    <Compile Include="Code\TradeList.cs" />
     <Compile Include="Code\Transaction.cs" />
     <Compile Include="Code\TransactionItem.cs" />
     <Compile Include="Code\TransactionItemList.cs" />
     <Compile Include="Code\TransactionList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <Compile Include="Code\Parameters.cs" />
-    <Compile Include="Code\Signpost.cs" />
-    <Compile Include="Code\SignpostEntry.cs" />
-    <Compile Include="Code\SolarSystem.cs" />
-    <Compile Include="Code\SolarSystemList.cs" />
-    <Compile Include="Code\SolarSystemsReader.cs" />
-    <Compile Include="Code\SolarSystemJumpsReader.cs" />
-    <Compile Include="Code\Station.cs" />
-    <Compile Include="Code\StationList.cs" />
-    <Compile Include="Code\StationReader.cs" />
-    <Compile Include="Code\Trade.cs" />
-    <Compile Include="Code\TradeList.cs" />
+    <Compile Include="Properties\Resources.Designer.cs" />
+    <Compile Include="Properties\Settings.Designer.cs" />
     <Compile Include="Tests\CSVFileReaderTest.cs" />
     <Compile Include="Tests\EveExportReaderTest.cs" />
     <Compile Include="Tests\ItemDatabaseTest.cs" />
@@ -136,7 +104,6 @@
     <Compile Include="Tests\PageTest.cs" />
     <Compile Include="Tests\ReportInfoTest.cs" />
     <Compile Include="Tests\ReportsPageTest.cs" />
-    <Compile Include="Tests\TradeFinderTest.cs" />
     <Compile Include="Tests\RoundTripTest.cs" />
     <Compile Include="Tests\SearchPageTest.cs" />
     <Compile Include="Tests\SingleTripTest.cs" />
@@ -145,6 +112,7 @@
     <Compile Include="Tests\StationTest.cs" />
     <Compile Include="Tests\TestObjectFactory.cs" />
     <Compile Include="Tests\TradeFinderFactoryTest.cs" />
+    <Compile Include="Tests\TradeFinderTest.cs" />
     <Compile Include="Tests\TradeListTest.cs" />
     <Compile Include="Tests\TransactionItemTest.cs" />
     <Compile Include="Tests\TransactionTest.cs" />
@@ -157,34 +125,63 @@
     <Compile Include="Web Server\WelcomePage.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <EmbeddedResource Include="Data\dbo_invTypes.csv" />
     <EmbeddedResource Include="Data\dbo_mapSolarSystemJumps.csv" />
     <EmbeddedResource Include="Data\dbo_mapSolarSystems.csv" />
     <EmbeddedResource Include="Data\dbo_staStations.csv" />
     <None Include="EveMarketToolTests.nunit" />
-    <None Include="EveMarketTool_TemporaryKey.pfx" />
-    <None Include="Tests\ItemDatabaseTestInput.csv" />
-    <EmbeddedResource Include="Tests\EveExportReaderItemsTestInput.csv" />
+    <None Include="Properties\app.manifest" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Tests\CSVFileReaderQuotedTestInput.csv" />
     <None Include="Tests\CSVFileReaderSimpleTestInput.csv" />
+    <EmbeddedResource Include="Tests\EveExportReaderItemsTestInput.csv" />
+    <None Include="Tests\ItemDatabaseTestInput.csv" />
     <None Include="Tests\StationReaderTestInput.csv" />
   </ItemGroup>
   <ItemGroup>
-    <BaseApplicationManifest Include="Properties\app.manifest" />
-    <None Include="Tests\Logs\MarketTestInput - Kernite - 2007.01.28 172658.txt" />
-    <None Include="Tests\Logs\MarketTestInput - Navitas - 2007.01.28 172734.txt" />
-    <None Include="Tests\Logs\Old Logs\MarketTestInput - Kernite - 2007.01.27 172658.txt" />
-    <None Include="Tests\Logs\Old Logs\MarketTestInput - Navitas - 2007.01.28 172100.txt" />
+    <Content Include="Tests\Logs\MarketTestInput - Kernite - 2007.01.28 172658.txt" />
+    <Content Include="Tests\Logs\MarketTestInput - Navitas - 2007.01.28 172734.txt" />
+    <Content Include="Tests\Logs\Old Logs\MarketTestInput - Kernite - 2007.01.27 172658.txt" />
+    <Content Include="Tests\Logs\Old Logs\MarketTestInput - Navitas - 2007.01.28 172100.txt" />
+    <Content Include="Tests\Logs\Special Logs\MarketTestInput - Kernite - with-dashes - like - aaa - 2007.01.27 172659.txt" />
+    <Content Include="Tests\Logs\Special Logs\MarketTestInput - Kernite - with-dashes - like - this - 2007.01.27 172657.txt" />
+    <Content Include="Tests\Logs\Special Logs\MarketTestInput - Kernite - with-dashes - like - this - 2007.01.27 172658.txt" />
+    <Content Include="Tests\Logs\The Citadel - Celestis - 2007.05.01 200925.txt" />
     <EmbeddedResource Include="Tests\PageTestInput.txt" />
-    <EmbeddedResource Include="Web Server\SearchFooter.html" />
-    <EmbeddedResource Include="Web Server\ReportsNotFoundFooter.html" />
+    <Content Include="Tests\Safe\MarketTestInput - Kernite - 2007.01.27 172658.txt" />
+    <Content Include="Tests\Safe\MarketTestInput - Kernite - 2007.01.28 172658.txt" />
+    <Content Include="Tests\Safe\MarketTestInput - Navitas - 2007.01.28 172100.txt" />
+    <Content Include="Tests\Safe\MarketTestInput - Navitas - 2007.01.28 172734.txt" />
     <EmbeddedResource Include="Web Server\ReportsFoundFooter.html" />
     <EmbeddedResource Include="Web Server\ReportsHeader.html" />
+    <EmbeddedResource Include="Web Server\ReportsNotFoundFooter.html" />
+    <EmbeddedResource Include="Web Server\SearchFooter.html" />
     <EmbeddedResource Include="Web Server\SearchHeader.html" />
-    <EmbeddedResource Include="Web Server\WelcomeWithTrust.html" />
     <EmbeddedResource Include="Web Server\WelcomeWithoutTrust.html" />
+    <EmbeddedResource Include="Web Server\WelcomeWithTrust.html" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
       <Visible>False</Visible>
       <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
@@ -200,28 +197,16 @@
       <ProductName>.NET Framework 3.5</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Tests\Logs\Special Logs\MarketTestInput - Kernite - with-dashes - like - aaa - 2007.01.27 172659.txt" />
+    <Folder Include="Tests\Logs\Archive\" />
+    <Folder Include="Tests\Logs\Special Logs\Coolant\" />
+    <Folder Include="Tests\Logs\Temp\Archive\" />
+    <Folder Include="Tests\NoLogs\Archive\" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Tests\Logs\Special Logs\MarketTestInput - Kernite - with-dashes - like - this - 2007.01.27 172657.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Tests\Logs\Special Logs\MarketTestInput - Kernite - with-dashes - like - this - 2007.01.27 172658.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Tests\Logs\Special Logs\Coolant\Domain-Coolant-2008.09.02 050649.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Tests\NoLogs\" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
