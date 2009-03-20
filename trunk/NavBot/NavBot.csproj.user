@@ -1,16 +1,13 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartWorkingDirectory>
-    </StartWorkingDirectory>
+    <StartWorkingDirectory>C:\Dokumente und Einstellungen\Dave\Desktop\navbot\</StartWorkingDirectory>
     <StartAction>Project</StartAction>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <StartWorkingDirectory>
-    </StartWorkingDirectory>
+    <StartWorkingDirectory>C:\Dokumente und Einstellungen\Dave\Desktop\navbot\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
-    <PublishUrlHistory>
-    </PublishUrlHistory>
+    <PublishUrlHistory>C:\Dokumente und Einstellungen\Dave\Desktop\navbot\|C:\Dokumente und Einstellungen\Dave.XCOM.000\Desktop\navbot\|C:\Dokumente und Einstellungen\Dave.XCOM.000\Desktop\|C:\Documents and Settings\Remi.MYST\Desktop\NavBot\|publish\</PublishUrlHistory>
     <InstallUrlHistory>
     </InstallUrlHistory>
     <SupportUrlHistory>
@@ -21,5 +18,7 @@
     </BootstrapperUrlHistory>
     <FallbackCulture>en-US</FallbackCulture>
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
+    <ErrorReportUrlHistory>
+    </ErrorReportUrlHistory>
   </PropertyGroup>
 </Project>

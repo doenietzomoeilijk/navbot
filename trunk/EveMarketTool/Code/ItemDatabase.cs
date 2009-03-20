@@ -41,7 +41,7 @@ namespace EveMarketTool
 
         public ItemDatabase()
         {
-            ReadFromResource("Data.dbo_invTypes.csv");
+            ReadFromResource("Data.dbo_invTypes.csv", "\n");
         }
 
         public ItemDatabase(string fullPath)

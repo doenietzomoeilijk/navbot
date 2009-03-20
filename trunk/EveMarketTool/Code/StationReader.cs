@@ -24,7 +24,7 @@ namespace EveMarketTool
         public StationReader(Map map)
         {
             this.map = map;
-            ReadFromResource("Data.dbo_staStations.csv");
+            ReadFromResource("Data.dbo_staStations.csv", "\r\n");
         }
 
         public StationReader(Map map, string fullPath)
