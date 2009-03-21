@@ -90,7 +90,6 @@
     <Compile Include="Code\TransactionList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs" />
-    <Compile Include="Properties\Settings.Designer.cs" />
     <Compile Include="Tests\CSVFileReaderTest.cs" />
     <Compile Include="Tests\EveExportReaderTest.cs" />
     <Compile Include="Tests\ItemDatabaseTest.cs" />
@@ -132,10 +131,6 @@
     <EmbeddedResource Include="Data\dbo_staStations.csv" />
     <None Include="EveMarketToolTests.nunit" />
     <None Include="Properties\app.manifest" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
-    </None>
     <None Include="Tests\CSVFileReaderQuotedTestInput.csv" />
     <None Include="Tests\CSVFileReaderSimpleTestInput.csv" />
     <EmbeddedResource Include="Tests\EveExportReaderItemsTestInput.csv" />
