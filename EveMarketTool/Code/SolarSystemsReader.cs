@@ -44,6 +44,7 @@ namespace EveMarketTool
             string itemName = fields["solarSystemName"];
             float security = ParseNumber(fields["security"]);
             int regionId = ParseId(fields["regionID"]);
+            //Console.WriteLine("Line: "+ itemId.ToString() + " " + itemName.ToString() +" " + regionId.ToString());
             Region r = null;
 
             if (regions.ContainsKey(regionId))

@@ -54,6 +54,7 @@ namespace EveMarketTool
             int id = ParseId(fields["typeID"]);
             string name = fields["typeName"];
             float volume = ParseNumber(fields["volume"]);
+
             ItemType t = new ItemType(id, name, volume);
             if (!itemTypesByName.ContainsKey(t.Name))
             {

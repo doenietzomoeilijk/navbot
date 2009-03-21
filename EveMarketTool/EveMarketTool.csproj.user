@@ -1,12 +1,12 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <StartArguments>/run EveMarketTool.sln</StartArguments>
-    <StartWorkingDirectory>C:\Dokumente und Einstellungen\Dave\Desktop\navbot\</StartWorkingDirectory>
+    <StartWorkingDirectory>D:\eve\</StartWorkingDirectory>
     <StartProgram>C:\Program Files\NUnit 2.4.7\bin\nunit.exe</StartProgram>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <StartArguments>/run EveMarketTool.sln</StartArguments>
-    <StartWorkingDirectory>C:\Dokumente und Einstellungen\Dave\Desktop\navbot\</StartWorkingDirectory>
+    <StartWorkingDirectory>D:\eve\</StartWorkingDirectory>
     <StartProgram>C:\Program Files\NUnit 2.4.8\bin\nunit.exe</StartProgram>
   </PropertyGroup>
   <PropertyGroup>
