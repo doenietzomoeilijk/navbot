@@ -56,13 +56,27 @@ namespace EveMarketTool
         void WebRequest(IAsyncResult ar)
         {
             if (httpListener == null) return;
+            HttpListenerContext context = null;
 
             try
             {
-                HttpListenerContext context = httpListener.EndGetContext(ar);
-                string systemName = context.Request.Headers["Eve.solarsystemname"];
-                string charName = context.Request.Headers["Eve.charname"];
-                string charId = context.Request.Headers["Eve.charid"];
+                context = httpListener.EndGetContext(ar);
+                //navbot-61 - Header Keys Changed in Dominion
+                string systemName = context.Request.Headers["EVE_SOLARSYSTEMNAME"];
+                string charName = context.Request.Headers["EVE_CHARNAME"];
+                string charId = context.Request.Headers["EVE_CHARID"];
+                /* Other available header keys in Dominion
+                 * EVE_CHARNAME: username
+                   EVE_STATIONNAME: Foobar - Center for Advanced Studies School
+                   EVE_CONSTELLATIONNAME: Anwyns
+                   EVE_CORPNAME: The Corp
+                   EVE_CHARID: 1234567890
+                   EVE_CORPID: 1234567
+                   EVE_SOLARSYSTEMNAME: Foobar
+                   EVE_REGIONNAME: Verge Vendor
+                   EVE_TRUSTED: Yes
+                   EVE_SERVERIP: 87.237.38.200:26000
+                 */
 
                 string htmlOutput;
                 string pageKey = context.Request.Url.AbsolutePath;
@@ -86,10 +100,16 @@ namespace EveMarketTool
                 }
 
                 byte[] htmlData = System.Text.UTF8Encoding.UTF8.GetBytes(htmlOutput);
+                //navbot-61 New Browser appears to be based on Mozilla.  Needs to have Content Type and Length set on the output HTTP Header
+                context.Response.ContentType = "text/html; charset=utf-8";
+                context.Response.ContentLength64 = htmlData.Length;
                 context.Response.OutputStream.Write(htmlData, 0, htmlData.Length);
-                context.Response.Close();
 
-                IAsyncResult result = httpListener.BeginGetContext(new AsyncCallback(WebRequest), httpListener);
+            }
+            catch (HttpListenerException httpEx)
+            {
+                //--navbot-61 Will happen if the user impatient and clicks the link twice before the page loads--
+                Console.Write(httpEx);
             }
             catch (Exception e)
             {
@@ -101,6 +121,19 @@ namespace EveMarketTool
                 {
                     MessageBox.Show("Sorry to give you bad news, but something's gone wrong.\nPlease report the following text to Tejar:\n" + e.ToString());
                 }
+            }
+            finally
+            {
+                //navbot-61 Found that with errors, the output stream was not getting closed.
+                try
+                {
+                    context.Response.OutputStream.Close();
+                }
+                catch (Exception e2)
+                {
+                    Console.Write(e2);
+                }
+                IAsyncResult result = httpListener.BeginGetContext(new AsyncCallback(WebRequest), httpListener);
             }
         }
     }
