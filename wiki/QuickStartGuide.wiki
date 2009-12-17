@@ -3,8 +3,18 @@
 
 Thank-you for your purchase of the NavBot-class trade assistant. This short guide will help you install the unit and connect it with your Pod's systems.
 
-== Installing NavBot ==
-Download and extract the setup files, the run setup.exe. NavBot should automatically detect the EVE directories that link you to your Pod and will run in the system tray (bottom-right).
+== Installing NavBot and setting it to run as Administrator ==
+To install, extract all the files from the zip and then right-click on setup-run-as-administrator.exe choose "Run as Administrator". NavBot should automatically detect the EVE directories that link you to your Pod and will run in the system tray (bottom-right).
+
+WARNING: NavBot must always be run as the administrator. This is a bit awkward, but you can set it up as follows:
+  # Search for NavBot.exe (in Vista+ you can do this from by pressing the windows key, then typing "NavBot.exe" and waiting)
+  # Right-click on the NavBot.exe result and open its properties.
+  # Check that it's the version you just installed (the date should tell you)
+  # Go to the Compatibility tab
+  # Put at tick in the "Run as Administrator" check box
+  # Click OK
+
+Now whenever you run NavBot, it will run as the Administrator. If you don't do this, it won't work. We're sorry! If you know some C# and want to fix this, go ahead and grab the source from this site and submit a patch. We're very friendly!
 
 == Your First Time with NavBot ==
 Once NavBot is running in the taskbar, go into EVE and open the in-game browser. Either press Ctrl-V or type "http://localhost:9999" into the address bar, and press enter. This will connect you to NavBot.
