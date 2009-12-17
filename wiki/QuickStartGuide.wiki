@@ -13,7 +13,6 @@ WARNING: NavBot must always be run as the administrator. This is a bit awkward, 
   # Go to the Compatibility tab
   # Put at tick in the "Run as Administrator" check box
   # Click OK
-
 Now whenever you run NavBot, it will run as the Administrator. If you don't do this, it won't work. We're sorry! If you know some C# and want to fix this, go ahead and grab the source from this site and submit a patch. We're very friendly!
 
 == Your First Time with NavBot ==
