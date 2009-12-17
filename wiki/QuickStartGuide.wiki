@@ -31,7 +31,6 @@ Now for the best bit - the top trade routes! NavBot finds three kinds of routes:
   # The best (most profit per warp) single trade trip you can make, starting from your current system. This is what you'll usually use; it tells you how to maximise the amount of isk you're earning per hour.
   # The best (most profit per warp) single trade trip between any two systems that NavBot can find. This gives you an idea of how much profit is available in the regions you've exported, and can help you decide whether to stay where you are or go to a different system to start trading there.
   # The largest profit in total to be found between any two systems. This is perfect if you just want to stick the autopilot on, sit back and relax.
-
 For each type of route, NavBot shows two routes - one with systems that start and end in secure space (>0.5) and one with systems that may start or end in insecure space (<0.5).
 
 Picking a route is easy - you can right-click on any of the links and choose to autopilot to them or even dock directly at the correct station, all from NavBot's report screen. The type and number of items to buy are shown too!
