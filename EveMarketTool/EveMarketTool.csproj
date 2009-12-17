@@ -124,7 +124,6 @@
     <Compile Include="Web Server\WelcomePage.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <EmbeddedResource Include="Data\dbo_invTypes.csv" />
     <EmbeddedResource Include="Data\dbo_mapSolarSystemJumps.csv" />
     <EmbeddedResource Include="Data\dbo_mapSolarSystems.csv" />
@@ -160,7 +159,7 @@
     <EmbeddedResource Include="Web Server\WelcomeWithTrust.html" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="nunit.framework, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />

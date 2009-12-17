@@ -96,7 +96,7 @@ namespace EveMarketTool
                 }
                 else
                 {
-                    htmlOutput = "<html><body>Oops - I seem to have lost my mind. Please report this to Tejar at once!</body></html>";
+                    htmlOutput = "<html><body>Oops - I seem to have lost my mind. Please report this to http://code.google.com/p/navbot/issues at once!</body></html>";
                 }
 
                 byte[] htmlData = System.Text.UTF8Encoding.UTF8.GetBytes(htmlOutput);
@@ -115,11 +115,11 @@ namespace EveMarketTool
             {
                 if (ReportError != null)
                 {
-                    ReportError("Sorry to give you bad news, but something's gone wrong.\nI've put some extra information into the clipboard - if you send it to Tejar, he'll do his best to help you.", e.ToString());
+                    ReportError("Sorry to give you bad news, but something's gone wrong.\nI've put some extra information into the clipboard - if you post it to http://code.google.com/p/navbot/issues, someone may be able to help you.", e.ToString());
                 }
                 else
                 {
-                    MessageBox.Show("Sorry to give you bad news, but something's gone wrong.\nPlease report the following text to Tejar:\n" + e.ToString());
+                    MessageBox.Show("Sorry to give you bad news, but something's gone wrong.\nPlease report the following text to http://code.google.com/p/navbot/issues:\n" + e.ToString());
                 }
             }
             finally
