@@ -145,11 +145,11 @@ namespace EveMarketTool
             {
                 try
                 {
-                    output += "Looking for quick cash? Here's the trades that'll make us the best short-term profit:";
-                    output += "<table>";
+                    output += "<p><font size='4' face='Verdana'>Quick Cash Short-Term Profits</font></p>";
+                    //output += "<table>";
                     output += ShowBestTrips(ProfitType.ProfitPerWarpFromStartingSystem);
-                    output += "</table>";
-                    output += "<br></br>";
+                    //output += "</table>";
+                    //output += "<br></br>";
                 }
                 catch (CannotFindStartingSystem)
                 {
@@ -158,17 +158,17 @@ namespace EveMarketTool
                 }
             }
 
-            output += "Fancy a change of scenery? Here's the best trade routes anywhere in the galaxy:";
-            output += "<table>";
+            output += "<p><font size='4' face='Verdana'>Best Trade Routes</font></p>";
+            //output += "<table>";
             output += ShowBestTrips(ProfitType.MaxProfitPerWarp);
-            output += "</table>";
-            output += "<br></br>";
+            //output += "</table>";
+            //output += "<br></br>";
 
-            output += "Feel like an epic journey? Here's how much profit we could make in one long trip:";
-            output += "<table>";
+            output += "<p><font size='4' face='Verdana'>Long Travel Routes</font></p>";
+            //output += "<table>";
             output += ShowBestTrips(ProfitType.MaxProfit);
-            output += "</table>";
-            output += "<br></br>";
+            //output += "</table>";
+            //output += "<br></br>";
             return output;
         }
 
@@ -226,32 +226,108 @@ namespace EveMarketTool
             SecurityStatus.Level security = SecurityStatus.Min(startingTrip, route.Security);
             string output = "";
             
-            output += FormatIsk(route.Profit) + " profit: " + FormatPercent(route.ProfitMargin) + " margin ";
-            if (isk > 0)
-            {
-                output += "(" + FormatPercent(route.Profit / isk) + ") ";
-            }
-            output += " from " + Info(route.Source, systemName) + " to " + Info(route.Destination, route.Source.System);
+            // The output method for this had to be changed quite a bit, not sure if this is the
+            // proper way to do it, since I have never used C# before -- Terracarbon.
 
-            if (security == SecurityStatus.Level.LowSecShortcut)
+            string TotalProfit = FormatIsk(route.Profit);
+            string ProfitMargin = FormatPercent(route.ProfitMargin);
+            string UnknownA = FormatPercent(route.Profit / isk);
+            string FromSystem = Info(route.Source, systemName);
+            string ToSystem = Info(route.Destination, route.Source.System);
+            bool HighSecurity = false;
+
+            string ProfitAWarp = "";
+
+
+            if (security == SecurityStatus.Level.LowSecOnly)
             {
-                output += ", " + FormatIsk(route.ProfitPerWarp(true)) + "/warp highsec, ";
-                output += ", " + FormatIsk(route.ProfitPerWarp(false)) + "/warp lowsec, ";
-            }
-            else if (security == SecurityStatus.Level.HighSec)
-            {
-                output += ", " + FormatIsk(route.ProfitPerWarp(true)) + "/warp, ";
+                HighSecurity = false;
             }
             else
             {
-                output += ", " + FormatIsk(route.ProfitPerWarp(false)) + "/warp, ";
+                HighSecurity = true;
             }
-            output += string.Format("<br>Total Cost: {0:N1} isk;  Total Cargo: {1} m3", route.Cost, route.Volume);
 
-            output += "<br>Purchases:<br>";
+            ProfitAWarp = FormatIsk(route.ProfitPerWarp(HighSecurity));
+
+            // test---
+            output += "<table border='0' width='100%'><tr><td width='20%'><font size='2' face='Verdana'><strong>Profit: ";
+            output += "</strong></font><font color='#00FF00' size='2' face='Verdana'>" + TotalProfit + " ("+ ProfitMargin + ")</font></td>";
+            output += "<td width='30%'><font color='#FFFFFF' size='2' face='Verdana'><strong>From: </strong>" + Info(route.Source, systemName) + "</font>";
+            output += "<font color='#00FF00' size='2' face='Verdana'> </font></td>";
+            output += "<td width='30%'><font color='#FFFFFF' size='2' face='Verdana'><strong>To: </strong>" + ToSystem + "</font>";
+            output += "<font color='#00FF00' size='2' face='Verdana'> </font></td>";
+            output += "<td width='20%'><font color='#FFFFFF' size='2' face='Verdana'><strong>ISK/Warp: </strong></font>";
+            output += "<font color='#00FF00' size='2' face='Verdana'>" + ProfitAWarp + "</font></td>";
+            output += "</tr></table>";
+
+            // endtest---
+
+
+
+            //output += FormatIsk(route.Profit) + " profit: " + FormatPercent(route.ProfitMargin) + " margin ";
+            if (isk > 0)
+            {
+                //output += "(" + FormatPercent(route.Profit / isk) + ") ";
+            }
+            //output += " from " + Info(route.Source, systemName) + " to " + Info(route.Destination, route.Source.System);
+
+            if (security == SecurityStatus.Level.LowSecShortcut)
+            {
+                //output += ", " + FormatIsk(route.ProfitPerWarp(true)) + "/warp highsec, ";
+                //output += ", " + FormatIsk(route.ProfitPerWarp(false)) + "/warp lowsec, ";
+            }
+            else if (security == SecurityStatus.Level.HighSec)
+            {
+                //output += ", " + FormatIsk(route.ProfitPerWarp(true)) + "/warp, ";
+            }
+            else
+            {
+                //output += ", " + FormatIsk(route.ProfitPerWarp(false)) + "/warp, ";
+            }
+
+            //string TotalCapital = string.Format("{0:N1} ISK", route.Cost);
+            //string TotalCargo = string.Format("{1}m3", route.Volume);
+
+            string TradeDetail = string.Format("You'll need <strong>{1}m3</strong> cargo space and <strong>{0:N1} ISK</strong> of capital for this trade.", route.Cost, route.Volume);
+
+            //output += string.Format("<br>Total Cost: {0:N1} isk;  Total Cargo: {1} m3", route.Cost, route.Volume);
+
+            //output += "<br>Purchases:<br>";
+            //output += route.ListPurchases();
+            //output += "Sales:<br>";
+            //output += route.ListSales();
+
+            // We use a new table here to display information a little clearer,
+            // such as how much cargohold, capital and if we have to travel through
+            // low security, etc.
+
+            output += "<table border='1' cellpadding='10' cellspacing='0' width='100%' bordercolor='#C0C0C0'>";
+            output += "<tr><td width='100%'><font size='2' face='Verdana'><strong>Purchases:<br>";
             output += route.ListPurchases();
-            output += "Sales:<br>";
+            //output += "</strong></font><font color='#00FF00' size='2' face='Verdana'>Item Name</font>";
+            //output += "<font color='#FFFFFF' size='2' face='Verdana'>(1632 Units) Cost: </font>";
+            //output += "<font color='#FF0000' size='2' face='Verdana'>57,693,500.00 ISK<br>";
+            output += "</font><font color='#FFFFFF' size='2' face='Verdana'><strong>Sales:<br>";
             output += route.ListSales();
+            //output += "<a href='showinfo://2502//60004618'>test</a></strong></font><font color='#00FF00' size='2' face='Verdana'>Item Name";
+            //output += "</font><font color='#FFFFFF' size='2' face='Verdana'>(1632 Units) Cost: </font>";
+            //output += "<font color='#00FF00' size='2' face='Verdana'>57,693,500.00 ISK<br><br>";
+            output += "<br></font><font color='#8080FF' size='2' face='Verdana'>" + TradeDetail + "</font><br>";
+
+            if (HighSecurity == true)
+            {
+                output += "</font><font color='#008000' size='2' face='Verdana'>This trade travels through high security space and is considered relatively safe.<br>";
+            }
+            else
+            {
+                output += "</strong></font><font color='#FF0000' size='2' face='Verdana'><strong>This trade travels through a low security space, use caution!</strong></font>";
+            }
+            
+            output += "</td></tr></table>";
+
+
+
 
             return output;
         }
@@ -282,7 +358,9 @@ namespace EveMarketTool
 
         public string Info(Station station)
         {
-            string result = "<a href=\"showinfo:" + station.TypeId + "//" + station.Id + "\">" + station.System.Name + "</a>";
+            // Terracarbon: Changed to reflect the new browser :^)
+            string result = "<button type='button' onclick='CCPEVE.showInfo(" + station.TypeId + "," + station.Id + ")'>" + station.System.Name + "</button><a href='javascript:CCPEVE.setDestination(" + station.System.Id + ")'>Set</a>";
+            //string result = "<a href=\"showinfo:" + station.TypeId + "//" + station.Id + "\">" + station.System.Name + "</a>";
             return result;
         }
 
@@ -294,7 +372,7 @@ namespace EveMarketTool
                 SolarSystem system = finder.map.GetSystem(here);
                 if (system != null)
                 {
-                    result = Info(station, system, " from here");
+                    result = Info(station, system, "");
                 }
             }
             return result;

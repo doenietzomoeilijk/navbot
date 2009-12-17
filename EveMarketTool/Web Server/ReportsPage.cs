@@ -49,13 +49,25 @@ namespace EveMarketTool
 
             if (filenames.Length == 0)
             {
-                return "<p>Actually, captain, we don't have any market reports at the moment. To download some, use the \"Export Data\" button in the market.</p>" + noReportsFoundFooter;
+                return "<font color='C0C0C0' size='3' face='Verdana'><b>Uh oh!</b> We don't seem to have any data available! To download data, use the <strong>Export Data</strong> button in the market.</font><br><br>" + noReportsFoundFooter;
             }
             else
             {
-                string output = "<p>I have the following reports in my databanks, captain. To download more, use the \"Export Data\" button in the market!</p>";
-                output += "<table>";
+
+                string output = "";
+
+                output += "<font color='#C0C0C0' size='3' face='Verdana'>";
+                output += "I have the following data available to me. To download more data, use the <strong>Export Data</strong> button in the market.</font><br><br>";
+
                 List<ReportInfo> reportList = new List<ReportInfo>(filenames.Length);
+
+                // Start of Table [Item Name, Region, Age]
+
+                output += "<table border='0' cellpadding='5' width='100%'>";
+                output += "<tr><td width='40%' bgcolor='#444444'><font color='#FFFFFF' size='2' face='Verdana'><strong>Item Name</strong></font></td>";
+                output += "<td width='20%' bgcolor='#444444'><font color='#FFFFFF' size='2' face='Verdana'><strong>Region</strong></font></td>";
+                output += "<td width='40%' bgcolor='#444444'><font color='#FFFFFF' size='2' face='Verdana'><strong>Age</strong></font></td></tr>";
+
 
                 foreach (string f in filenames)
                 {
@@ -64,10 +76,21 @@ namespace EveMarketTool
 
                 reportList.Sort(ReportInfo.CompareByDate);
 
+                //int ColumnColor = 0;
+
                 foreach (ReportInfo ri in reportList)
                 {
+                    
+                    // Table listed items page added by Terracarbon (For Dominion!)
                     TimeSpan age = DateTime.Now - ri.Date;
-                    output += "<tr><td>" + ri.ItemName + "</td><td>" + ri.Region + "</td><td>" + (int)age.TotalHours + " hours and " + age.Minutes + " minutes old" + "</td></tr>";
+                    //output += "<tr><td>" + ri.ItemName + "</td><td>" + ri.Region + "</td><td>" + (int)age.TotalHours + " hours and " + age.Minutes + " minutes old" + "</td></tr>";
+                    
+                    // Column Style (A) 
+                    output += "<tr><td width='40%' bgcolor='#151515'><font color='#FFFFFF' size='2' face='Verdana'><strong>" + ri.ItemName + "</strong></font></td>";
+                    output += "<td width='20%' bgcolor='#151515'><font color='#FFFFFF' size='2' face='Verdana'>" + ri.Region + "</font></td>";
+                    output += "<td width='40%' bgcolor='#151515'><font color='#FFFFFF' size='2' face='Verdana'>" + (int)age.TotalHours + " hours and " + age.Minutes + " minutes ago</font></td></tr>";
+                    
+
                 }
 
                 output += "</table>";

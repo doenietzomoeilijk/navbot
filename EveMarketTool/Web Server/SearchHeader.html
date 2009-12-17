@@ -1,14 +1,60 @@
-﻿<p>
+﻿<body bgcolor="#000000" text="#FFFFFF" link="#00FF00" vlink="#008000" alink="#008080">
+
+  <table border="0" width="100%" cellpadding="4">
+    <tr>
+      <td width="30%">
+        <font color="#FFFFFF" size="4"
+        face="Verdana">
+          <strong>NavBot: </strong>
+        </font>
+        <font color="#800000" size="4" face="Verdana">Dominion</font><br>
+        
+        <font color="#2D2D2D" size="1" face="Verdana">Revision: J
+        </font>
+      </td>
+      <td valign="bottom" width="70%">
+        <font size="5"
+        face="Verdana">Trade Route Search Results</font>
+      </td>
+    </tr>
+  </table>
+<p>
+
   <form>
-    Available isk:&nbsp;<input type="text" name="isk" value="$isk" size="100"></input><br></br>
-    Cargo space:&nbsp;<input type="text" name="cargo" value="$cargo" size="100"></input><br></br>
-    Accounting:
-    <input type="radio" name="accounting" value="0" default="" />0
-    <input type="radio" name="accounting" value="1" default="" />1
-    <input type="radio" name="accounting" value="2" default="" />2
-    <input type="radio" name="accounting" value="3" default="" />3
-    <input type="radio" name="accounting" value="4" default="" />4
-    <input type="radio" name="accounting" value="5" default="" />5<br></br>
-    <input type="submit" value="Here, use these values"></input>
+      <table border="0" width="100%" cellpadding="4">
+        <tr>
+          <td valign="bottom" width="33%" bgcolor="#2C2C2C">
+            <font
+              size="1" face="Verdana">
+              Available ISK: <input
+            type="text" size="13" name="isk" value="$isk">
+              </font>
+          </td>
+          <td valign="bottom" width="33%" bgcolor="#2C2C2C">
+            <font
+              size="1" face="Verdana">
+              Cargohold: <input type="text"
+   size="7" name="cargo" value="$cargo">
+                m3
+              </font>
+          </td>
+          <td valign="bottom" width="34%" bgcolor="#2C2C2C">
+            <font
+              size="1" face="Verdana">
+              Accounting: <select
+  name="accounting" size="1">
+                <option selected="">0</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select> <input type="submit" name="submit"
+  value="Search!">
+              </font>
+          </td>
+        </tr>
+      </table>
   </form>
 </p>
+</body>
