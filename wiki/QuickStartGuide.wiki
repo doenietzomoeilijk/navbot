@@ -3,7 +3,10 @@
 
 Thank-you for your purchase of the NavBot-class trade assistant. This short guide will help you install the unit and connect it with your Pod's systems.
 
-== Installing NavBot and setting it to run as Administrator ==
+== Installing NavBot K ==
+To install, simply run "NavBot K (Installer).exe" and choose an installation path. This installer and version should automatically ask you to elevate administrator. *Note: This installer will not create a Start Menu item at this time.*
+
+== Installing NavBot J and setting it to run as Administrator ==
 To install, extract all the files from the zip and then right-click on setup-run-as-administrator.exe choose "Run as Administrator". NavBot should automatically detect the EVE directories that link you to your Pod and will run in the system tray (bottom-right).
 
 WARNING: NavBot must always be run as the administrator. This is a bit awkward, but you can set it up as follows:
