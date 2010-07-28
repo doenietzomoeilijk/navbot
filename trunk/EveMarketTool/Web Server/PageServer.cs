@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Net;
 using System.Windows.Forms;
+using System.Configuration;
 
 namespace EveMarketTool
 {
@@ -27,9 +28,9 @@ namespace EveMarketTool
             httpListener = new HttpListener();
             httpListener.AuthenticationSchemes = AuthenticationSchemes.Anonymous;
 
-            url = "http://localhost:9999/";
-            string prefix = string.Format("http://+:{0}/", 9999);
-            httpListener.Prefixes.Add(prefix);
+            // Addresses issue #20 - Terry
+            url = ConfigurationSettings.AppSettings["URLPrefix"];
+            httpListener.Prefixes.Add(url);
             httpListener.Start();
             IAsyncResult result = httpListener.BeginGetContext(new AsyncCallback(WebRequest), httpListener);
         }
@@ -83,8 +84,8 @@ namespace EveMarketTool
                 pageKey = pageKey.TrimEnd(new char[] { '/' });
                 if (pageKey == "/trustme") // special case - send request trust string in header
                 {
-                    context.Response.AddHeader("eve.trustme", "http://localhost:9999/");
-                    htmlOutput = "<html><body>Once you have enabled trust, please click <a href=\"http://localhost:9999/Welcome\">here</a>. You may have to set trust manually using the menus above.</body></html>";
+                    context.Response.AddHeader("eve.trustme", ConfigurationSettings.AppSettings["URLPrefix"]);
+                    htmlOutput = "<html><body>Once you have enabled trust, please click <a href=\"/Welcome\">here</a>. You may have to set trust manually using the menus above.</body></html>";
                 }
                 else if (pages.ContainsKey(pageKey))
                 {
@@ -115,11 +116,11 @@ namespace EveMarketTool
             {
                 if (ReportError != null)
                 {
-                    ReportError("Sorry to give you bad news, but something's gone wrong.\nI've put some extra information into the clipboard - if you post it to http://code.google.com/p/navbot/issues, someone may be able to help you.", e.ToString());
+                    ReportError("Sorry to give you bad news, but something's gone wrong.I've put some extra information into the clipboard - if you post it to http://code.google.com/p/navbot/issues, someone may be able to help you.", e.ToString());
                 }
                 else
                 {
-                    MessageBox.Show("Sorry to give you bad news, but something's gone wrong.\nPlease report the following text to http://code.google.com/p/navbot/issues:\n" + e.ToString());
+                    MessageBox.Show("Sorry to give you bad news, but something's gone wrong.Please report the following text to http://code.google.com/p/navbot/issues:" + e.ToString());
                 }
             }
             finally

@@ -26,10 +26,14 @@ namespace EveMarketTool
         int accounting = 0;
         string systemName;
 
+        float sales_total = 0;
+        
         public SearchPage(TradeFinderFactory factory)
         {
             header = ReadFromResource("Web_Server.SearchHeader.html");
+            header = ReplaceVariables(header, null, null, null);
             footer = ReadFromResource("Web_Server.SearchFooter.html");
+            footer = ReplaceVariables(footer, null, null, null);
             this.factory = factory;
         }
 
@@ -43,26 +47,30 @@ namespace EveMarketTool
             this.finder = factory.Create();
             this.systemName = systemName;
             input = new NameValueCollection(query);
+
             if (input["isk"] == null)
             {
                 input["isk"] = Application.UserAppDataRegistry.GetValue("LastKnownIsk") as string;
-                if (input["isk"] == null)
-                {
-                    input["isk"] = "";
-                }
+                if (input["isk"] == null) input["isk"] = "";
             }
 
             if (input["cargo"] == null)
             {
                 input["cargo"] = Application.UserAppDataRegistry.GetValue("LastKnownCargoSpace") as string;
-                if (input["cargo"] == null)
-                {
-                    input["cargo"] = "";
-                }
+                if (input["cargo"] == null) input["cargo"] = "";
             }
 
-            // We should set the accounting selection to be based on the past values  - need to look up how to do this.
-            //input["accounting"] = (int)Application.UserAppDataRegistry.GetValue("LastKnownAccounting");
+            if (input["numroutes"] == null)
+            {
+                input["numroutes"] = Application.UserAppDataRegistry.GetValue("LastKnownNumRoutes") as string;
+                if (input["numroutes"] == null) input["numroutes"] = "2";
+            }
+            
+            if (input["accounting"] == null)
+            {
+                input["accounting"] = Application.UserAppDataRegistry.GetValue("LastKnownAccounting") as string;
+                if (input["accounting"] == null) input["accounting"] = "0";
+            }
 
             return "<html><title>NavBot</title><body>" + ReplaceVariables(header, input) + Conversation() + "</body></html>";
         }
@@ -83,9 +91,11 @@ namespace EveMarketTool
             {
                 isk = float.Parse(input["isk"]);
                 cargo = float.Parse(input["cargo"]);
-                Application.UserAppDataRegistry.SetValue("LastKnownIsk", isk.ToString());
+                
+                Application.UserAppDataRegistry.SetValue("LastKnownIsk", String.Format("{0:0.##}", isk));
                 Application.UserAppDataRegistry.SetValue("LastKnownCargoSpace", cargo.ToString());
-                Application.UserAppDataRegistry.SetValue("LastKnownAccounting", accounting);
+                Application.UserAppDataRegistry.SetValue("LastKnownAccounting", input["accounting"]);
+                Application.UserAppDataRegistry.SetValue("LastKnownNumRoutes", input["numroutes"]);
                 return "<p>" + Routes() + "</p>" + footer;
             }
         }
@@ -141,15 +151,13 @@ namespace EveMarketTool
 
             finder.Parameters = new Parameters(isk, cargo, systemName, TripType.SingleTrip, accounting);
 
+            string MaxProfitStart = "";
+
             if (systemName != null)
             {
                 try
                 {
-                    output += "<p><font size='4' face='Verdana'>Quick Cash Short-Term Profits</font></p>";
-                    //output += "<table>";
-                    output += ShowBestTrips(ProfitType.ProfitPerWarpFromStartingSystem);
-                    //output += "</table>";
-                    //output += "<br></br>";
+                    MaxProfitStart = ShowBestTrips(ProfitType.ProfitPerWarpFromStartingSystem);
                 }
                 catch (CannotFindStartingSystem)
                 {
@@ -158,18 +166,19 @@ namespace EveMarketTool
                 }
             }
 
-            output += "<p><font size='4' face='Verdana'>Best Trade Routes</font></p>";
-            //output += "<table>";
-            output += ShowBestTrips(ProfitType.MaxProfitPerWarp);
-            //output += "</table>";
-            //output += "<br></br>";
+            string MaxProfitWarp = ShowBestTrips(ProfitType.MaxProfitPerWarp);
+            string MaxProfit = ShowBestTrips(ProfitType.MaxProfit);
 
-            output += "<p><font size='4' face='Verdana'>Long Travel Routes</font></p>";
-            //output += "<table>";
-            output += ShowBestTrips(ProfitType.MaxProfit);
-            //output += "</table>";
-            //output += "<br></br>";
-            return output;
+            string txtOut = "<p><font size='$fontsz_header' face='$fontname'>{0}</font></p>";
+
+            output += String.Format(txtOut, "Profit Per Warp From Starting Station") + MaxProfitStart;
+            output += String.Format(txtOut, "Max Profit Per Warp") + MaxProfitWarp;
+            output += String.Format(txtOut, "Max Profit Overall") + MaxProfit;
+
+            if (output.Length <= 512)
+                output = "<font size='$fontsz_normal' face='$fontname'>NavBot can't find any trades available with this search criteria.</font>";
+
+            return ReplaceVariables(output, null, null, null);
         }
 
         string ShowBestTrips(ProfitType type)
@@ -178,40 +187,36 @@ namespace EveMarketTool
             List<SingleTrip> shortestTrips = null;
             string output = string.Empty;
 
+            // Testing this at the moment..
+            int numroutes = Convert.ToInt32(input["numroutes"]); 
+
             switch (type)
             {
                 case ProfitType.ProfitPerWarpFromStartingSystem:
                     finder.SortByProfitPerWarpFromStartingSystem(true);
-                    secureTrips = finder.BestHighSecTrips(2);
+                    secureTrips = finder.BestHighSecTrips(numroutes); 
 
                     finder.SortByProfitPerWarpFromStartingSystem(false);
-                    shortestTrips = finder.BestTrips(2);
+                    shortestTrips = finder.BestTrips(numroutes); 
                     break;
 
                 case ProfitType.MaxProfitPerWarp:
                     finder.SortByProfitPerWarp(true);
-                    secureTrips = finder.BestHighSecTrips(2);
+                    secureTrips = finder.BestHighSecTrips(numroutes);
 
                     finder.SortByProfitPerWarp(false);
-                    shortestTrips = finder.BestTrips(2);
+                    shortestTrips = finder.BestTrips(numroutes);
                     break;
 
                 case ProfitType.MaxProfit:
                     finder.SortByProfit();
-                    secureTrips = finder.BestHighSecTrips(2);
-                    shortestTrips = finder.BestTrips(2);
+                    secureTrips = finder.BestHighSecTrips(numroutes);
+                    shortestTrips = finder.BestTrips(numroutes);
                     break;
             }
 
-            foreach (SingleTrip trip in secureTrips)
-            {
-                output += "<tr><td>" + Info(trip) + "</td></tr>";
-            }
-
-            foreach (SingleTrip trip in shortestTrips)
-            {
-                output += "<tr><td>" + Info(trip) + "</td></tr>";
-            }
+            foreach (SingleTrip trip in secureTrips) output += "<tr><td>" + Info(trip) + "</td></tr>";
+            foreach (SingleTrip trip in shortestTrips) output += "<tr><td>" + Info(trip) + "</td></tr>";
 
             return output;
         }
@@ -224,110 +229,65 @@ namespace EveMarketTool
         public string Info(SingleTrip route, SecurityStatus.Level startingTrip)
         {
             SecurityStatus.Level security = SecurityStatus.Min(startingTrip, route.Security);
-            string output = "";
-            
-            // The output method for this had to be changed quite a bit, not sure if this is the
-            // proper way to do it, since I have never used C# before -- Terracarbon.
 
-            string TotalProfit = FormatIsk(route.Profit);
-            string ProfitMargin = FormatPercent(route.ProfitMargin);
-            string UnknownA = FormatPercent(route.Profit / isk);
-            string FromSystem = Info(route.Source, systemName);
-            string ToSystem = Info(route.Destination, route.Source.System);
-            bool HighSecurity = false;
+            string output;
+            string TradeSec = string.Empty;
 
-            string ProfitAWarp = "";
+            // todo: this differently
+            int CurPercent = Convert.ToInt32(FormatPercent(route.ProfitMargin).Replace("%", ""));
+            int GreyPercent = 100 - CurPercent;
+            // ^--------------------^
 
+            float taxrate = 0.01f - (Convert.ToInt32(input["accounting"]) * 0.001f);
 
-            if (security == SecurityStatus.Level.LowSecOnly)
+            switch (security)
             {
-                HighSecurity = false;
-            }
-            else
-            {
-                HighSecurity = true;
-            }
-
-            ProfitAWarp = FormatIsk(route.ProfitPerWarp(HighSecurity));
-
-            // test---
-            output += "<table border='0' width='100%'><tr><td width='20%'><font size='2' face='Verdana'><strong>Profit: ";
-            output += "</strong></font><font color='#00FF00' size='2' face='Verdana'>" + TotalProfit + " ("+ ProfitMargin + ")</font></td>";
-            output += "<td width='30%'><font color='#FFFFFF' size='2' face='Verdana'><strong>From: </strong>" + Info(route.Source, systemName) + "</font>";
-            output += "<font color='#00FF00' size='2' face='Verdana'> </font></td>";
-            output += "<td width='30%'><font color='#FFFFFF' size='2' face='Verdana'><strong>To: </strong>" + ToSystem + "</font>";
-            output += "<font color='#00FF00' size='2' face='Verdana'> </font></td>";
-            output += "<td width='20%'><font color='#FFFFFF' size='2' face='Verdana'><strong>ISK/Warp: </strong></font>";
-            output += "<font color='#00FF00' size='2' face='Verdana'>" + ProfitAWarp + "</font></td>";
-            output += "</tr></table>";
-
-            // endtest---
-
-
-
-            //output += FormatIsk(route.Profit) + " profit: " + FormatPercent(route.ProfitMargin) + " margin ";
-            if (isk > 0)
-            {
-                //output += "(" + FormatPercent(route.Profit / isk) + ") ";
-            }
-            //output += " from " + Info(route.Source, systemName) + " to " + Info(route.Destination, route.Source.System);
-
-            if (security == SecurityStatus.Level.LowSecShortcut)
-            {
-                //output += ", " + FormatIsk(route.ProfitPerWarp(true)) + "/warp highsec, ";
-                //output += ", " + FormatIsk(route.ProfitPerWarp(false)) + "/warp lowsec, ";
-            }
-            else if (security == SecurityStatus.Level.HighSec)
-            {
-                //output += ", " + FormatIsk(route.ProfitPerWarp(true)) + "/warp, ";
-            }
-            else
-            {
-                //output += ", " + FormatIsk(route.ProfitPerWarp(false)) + "/warp, ";
+                case SecurityStatus.Level.LowSecOnly:
+                    TradeSec = "<b><font color='#FF0000' size='$fontsz_small' face='$fontname'>Routes through lowsec only!</font></b>";
+                    break;
+                case SecurityStatus.Level.LowSecShortcut:
+                    TradeSec = "<font color='#FF0000' size='$fontsz_small' face='$fontname'>Route has lowsec shortcut.</font>";
+                    break;
+                case SecurityStatus.Level.HighSec:
+                    TradeSec = "<font color='#00FF00' size='$fontsz_small' face='$fontname'>Routes through highsec only.</font>";
+                    break;
+                case SecurityStatus.Level.Isolated:
+                    TradeSec = "</b><font color='#00FF00' size='$fontsz_small' face='$fontname'>Routes within system!</font></b>";
+                    break;
             }
 
-            //string TotalCapital = string.Format("{0:N1} ISK", route.Cost);
-            //string TotalCargo = string.Format("{1}m3", route.Volume);
+            // Bug here :/
+            if (route.Profit - Variables.Total_Sales * taxrate <= 0) return "";
+            /*{
+                if (Constants.IsBetaVersion)
+                {
+                    return "Strange, a trade that would result in a loss was passed here. Don't report this.";
+                }
+                else
+                {
+             */
+             //       return "";
+             //   }
+            //}
 
-            string TradeDetail = string.Format("You'll need <strong>{1}m3</strong> cargo space and <strong>{0:N1} ISK</strong> of capital for this trade.", route.Cost, route.Volume);
+            output = ReadFromResource("Web_Server.TradePage.html");
 
-            //output += string.Format("<br>Total Cost: {0:N1} isk;  Total Cargo: {1} m3", route.Cost, route.Volume);
+            // Replace $Identifiers ..
+            output = output.Replace("$TO", Info(route.Destination, route.Source.System));
+            output = output.Replace("$FROM", Info(route.Source, systemName));
+            output = output.Replace("$HISK", FormatIsk(route.ProfitPerWarp(true)));
+            output = output.Replace("$LISK", FormatIsk(route.ProfitPerWarp(false)));
+            output = output.Replace("$CURPERCENT", String.Format("{0}", CurPercent));
+            output = output.Replace("$ENDPERCENT", String.Format("{0}", GreyPercent));
+            output = output.Replace("$TRADESEC", TradeSec);
+            output = output.Replace("$LISTP", route.ListPurchases());
+            output = output.Replace("$LISTS", route.ListSales());
+            output = output.Replace("$CNEED", String.Format("{0:0.##}m3", route.Volume));
+            output = output.Replace("$RNEED", String.Format("{0:0.##} ISK", route.Cost));
+            output = output.Replace("$TAXTOTAL", String.Format("{0:0.##} ({1:0.##}%)", Variables.Total_Sales * taxrate, taxrate * 100));
+            output = output.Replace("$PROFIT", FormatIsk(route.Profit - (Variables.Total_Sales * taxrate)) + " (" + FormatPercent(route.ProfitMargin) + ")");
 
-            //output += "<br>Purchases:<br>";
-            //output += route.ListPurchases();
-            //output += "Sales:<br>";
-            //output += route.ListSales();
-
-            // We use a new table here to display information a little clearer,
-            // such as how much cargohold, capital and if we have to travel through
-            // low security, etc.
-
-            output += "<table border='1' cellpadding='10' cellspacing='0' width='100%' bordercolor='#C0C0C0'>";
-            output += "<tr><td width='100%'><font size='2' face='Verdana'><strong>Purchases:<br>";
-            output += route.ListPurchases();
-            //output += "</strong></font><font color='#00FF00' size='2' face='Verdana'>Item Name</font>";
-            //output += "<font color='#FFFFFF' size='2' face='Verdana'>(1632 Units) Cost: </font>";
-            //output += "<font color='#FF0000' size='2' face='Verdana'>57,693,500.00 ISK<br>";
-            output += "</font><font color='#FFFFFF' size='2' face='Verdana'><strong>Sales:<br>";
-            output += route.ListSales();
-            //output += "<a href='showinfo://2502//60004618'>test</a></strong></font><font color='#00FF00' size='2' face='Verdana'>Item Name";
-            //output += "</font><font color='#FFFFFF' size='2' face='Verdana'>(1632 Units) Cost: </font>";
-            //output += "<font color='#00FF00' size='2' face='Verdana'>57,693,500.00 ISK<br><br>";
-            output += "<br></font><font color='#8080FF' size='2' face='Verdana'>" + TradeDetail + "</font><br>";
-
-            if (HighSecurity == true)
-            {
-                output += "</font><font color='#008000' size='2' face='Verdana'>This trade travels through high security space and is considered relatively safe.<br>";
-            }
-            else
-            {
-                output += "</strong></font><font color='#FF0000' size='2' face='Verdana'><strong>This trade travels through a low security space, use caution!</strong></font>";
-            }
-            
-            output += "</td></tr></table>";
-
-
-
+            output = ReplaceVariables(output, null, null, null);
 
             return output;
         }
@@ -336,16 +296,16 @@ namespace EveMarketTool
         {
             string asNum;
             if(num>1000000)
-                asNum = string.Format("{0:#,#,,.#}", num) + "M";
+                asNum = string.Format("{0:#,#,,.##}", num) + "M";
             else if(num>1000)
                 asNum = string.Format("{0:#,#,.#}", num) + "K";
             else
-                asNum = string.Format("{0:0.0}", num);
+                asNum = string.Format("{0:0.###}", num);
 
             if (asNum.Length == 0)
                 asNum = "0.0";
 
-            return asNum + " isk";
+            return asNum + " ISK";
         }
 
         public string FormatPercent(float num)
@@ -358,9 +318,8 @@ namespace EveMarketTool
 
         public string Info(Station station)
         {
-            // Terracarbon: Changed to reflect the new browser :^)
-            string result = "<button type='button' onclick='CCPEVE.showInfo(" + station.TypeId + "," + station.Id + ")'>" + station.System.Name + "</button><a href='javascript:CCPEVE.setDestination(" + station.System.Id + ")'>Set</a>";
-            //string result = "<a href=\"showinfo:" + station.TypeId + "//" + station.Id + "\">" + station.System.Name + "</a>";
+            // Changed in latest build (showinfo:// to CCPEVE.showInfo) -- Terry
+            string result = "<button type='button' onclick='CCPEVE.showInfo(" + station.TypeId + "," + station.Id + ")'>" + station.System.Name + "</button> <a href='javascript:CCPEVE.setDestination(" + station.System.Id + ")'>Set</a>";
             return result;
         }
 
@@ -402,7 +361,6 @@ namespace EveMarketTool
 
                 if (security == SecurityStatus.Level.LowSecShortcut)
                 {
-                    //"<FONT COLOR="#cc6600">sample text</FONT>"
                     result += " <FONT COLOR=\"#00ff33\">(" + jumpsSecure + " " + Pluralize("jump", "jumps", jumpsSecure) + ")</FONT>";
                     result += "/<FONT COLOR=\"#ff0033\">(" + jumpsShortest + " " + Pluralize("jump", "jumps", jumpsShortest) + ")</FONT>" + postfix;
                 }

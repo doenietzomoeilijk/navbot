@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Text;
 using NUnit.Framework;
 using EveMarketTool.Tests.Mock_Objects;
+using System.Configuration;
 
 namespace EveMarketTool.Tests
 {
@@ -93,7 +94,7 @@ namespace EveMarketTool.Tests
         {
             NameValueCollection outputHeaders = new NameValueCollection();
             string html = WebUtils.ReadPageWithHeaders(server.Url + "trustme", new NameValueCollection(), outputHeaders);
-            Assert.AreEqual("http://localhost:9999/", outputHeaders["eve.trustme"]);
+            Assert.AreEqual(ConfigurationSettings.AppSettings["URLPrefix"], outputHeaders["eve.trustme"]);
         }
     }
 }

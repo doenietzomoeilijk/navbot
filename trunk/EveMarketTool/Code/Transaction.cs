@@ -417,8 +417,10 @@ namespace EveMarketTool
 
             foreach (TransactionItem t in purchases)
             {
-                output += t.ToString() + "<br>";
+                output += t.ToString(); // +"<br>";
             }
+
+            Variables.Total_Sales = 0f;
 
             return output;
         }
@@ -429,7 +431,7 @@ namespace EveMarketTool
 
             foreach (TransactionItem t in sales)
             {
-                output += t.ToString() + "<br>";
+                output += t.ToString(); // +"<br>";
             }
 
             return output;

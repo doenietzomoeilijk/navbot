@@ -6,6 +6,7 @@ using NUnit.Framework;
 using EveMarketTool.Tests.Mock_Objects;
 using System.Windows.Forms;
 using System.Globalization;
+using System.Configuration;
 
 namespace EveMarketTool.Tests
 {
@@ -181,7 +182,7 @@ namespace EveMarketTool.Tests
             string lowerCaseText = WebUtils.PlainText(html).ToLower();
 
             Assert.IsTrue(lowerCaseText.Contains("here's the trades"), "Didn't say the trades are here");
-            Assert.IsTrue(html.Contains("http://localhost:9999/Reports"), "No reports link");
+            Assert.IsTrue(html.Contains(ConfigurationSettings.AppSettings["URLPrefix"] + "Reports"), "No reports link");
         }
 
         [Test]

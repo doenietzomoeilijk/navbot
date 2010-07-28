@@ -105,6 +105,7 @@ namespace EveMarketTool
             ArchiveOutOfDateLogs(this.logFilePath);
         }
 
+        // Maybe change this to where you can specify the timespan.
         public virtual void ArchiveOldLogs()
         {
             string[] files = Directory.GetFiles(logFilePath, "*.txt", System.IO.SearchOption.TopDirectoryOnly);

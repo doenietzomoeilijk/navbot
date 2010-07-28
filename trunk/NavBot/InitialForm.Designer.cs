@@ -1,4 +1,6 @@
 using EveMarketTool;
+using System.Configuration;
+
 namespace NavBot
 {
     partial class InitialForm
@@ -50,12 +52,20 @@ namespace NavBot
             // notifyIcon
             // 
             this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.notifyIcon.BalloonTipText = "NavBot is now running. Open http://localhost:9999 in the EVE in-game browser (thi" +
-                "s address has been copied to the clipboard for you)";
-            this.notifyIcon.BalloonTipTitle = "NavBot rev. D";
+
+            if (Constants.IsBetaVersion)
+            {
+                this.notifyIcon.BalloonTipText = Constants.BetaTooltipMessage;
+            }
+            else
+            {
+                this.notifyIcon.BalloonTipText = "NavBot is now running. Open " + ConfigurationSettings.AppSettings["URLPrefix"] + " in EVE's In-Game Browser. It has been copied into the clipboard for you!";
+            }
+
+            this.notifyIcon.BalloonTipTitle = "NavBot Rev." + Constants.Revision;
             this.notifyIcon.ContextMenuStrip = this.iconMenu;
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
-            this.notifyIcon.Text = "NavBot";
+            this.notifyIcon.Text = "NavBot Rev. " + Constants.Revision;
             this.notifyIcon.Click += new System.EventHandler(this.notifyIcon_Click);
             // 
             // iconMenu

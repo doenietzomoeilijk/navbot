@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Collections.Generic;
 using System.Text;
+using System.Configuration;
 
 namespace EveMarketTool
 {
@@ -9,7 +10,7 @@ namespace EveMarketTool
     {
         private Trade tradeItem;
         private int quantity;
-
+       
         public Trade TradeItem
         {
             get
@@ -95,9 +96,14 @@ namespace EveMarketTool
 
         public override string ToString()
         {
-            return 
-                string.Format("<a href=\"showinfo:{0}\">{1}</a>", Type.Id, Type.Name) +
-                string.Format(CultureInfo.InvariantCulture, ": {0}/{1} at {2} isk/ea - Total: {3:N1}", Quantity, tradeItem.Quantity, UnitPrice, Quantity * UnitPrice);
+            Variables.Total_Sales += Quantity * UnitPrice;
+            string output = String.Format("<tr><td><font size='$fontsz_tiny' face='$fontname'><a href=\"javascript:CCPEVE.showInfo({0})\">{1}</a>", Type.Id, Type.Name) +
+                     String.Format(CultureInfo.InvariantCulture + "</font></td><td><font size='$fontsz_tiny' face='$fontname'>{0}</font></td><td><font size='$fontsz_tiny' face='$fontname'>{1}</font></td><td><font size='$fontsz_tiny' face='$fontname'>{2:0.##}</font></td></tr>", Quantity, UnitPrice, Quantity * UnitPrice);
+            // lazy sorry
+            output = output.Replace("$fontname", ConfigurationSettings.AppSettings["FontName"]);
+            output = output.Replace("$fontsz_tiny", ConfigurationSettings.AppSettings["FontSize_Tiny"]);
+
+            return output;
         }
     }
 }

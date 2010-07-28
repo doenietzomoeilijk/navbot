@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("NavBot")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A trade route finding tool for EVE Online(TM).")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("NavBot")]
 [assembly: AssemblyProduct("NavBot")]
-[assembly: AssemblyCopyright("Copyright ©  2007")]
+[assembly: AssemblyCopyright("Copyright ©  2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
