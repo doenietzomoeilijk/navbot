@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.IO;
 using EveMarketTool;
 using System.Threading;
+using System.Configuration;
 
 namespace NavBot
 {
@@ -42,12 +43,13 @@ namespace NavBot
                 server = new PageServer();
                 server.ReportError += new PageServer.ErrorMessageHandler(ReportError);
                 server.AddPage(new WelcomePage());
+                //server.AddPage(new HelpPage());
                 server.AddPage(new SearchPage(new TradeFinderFactory(eveDirectory.Text)));
                 server.AddPage(new ReportsPage(new TradeFinderFactory(eveDirectory.Text)));
 
                 try
                 {
-                    Clipboard.SetText("http://localhost:9999");
+                    Clipboard.SetText(ConfigurationSettings.AppSettings["URLPrefix"]);
                 }
                 catch (Exception)
                 {
@@ -91,7 +93,7 @@ namespace NavBot
                     notifyIcon.ShowBalloonTip(5000);
                     try
                     {
-                        Clipboard.SetText("http://localhost:9999");
+                        Clipboard.SetText(ConfigurationSettings.AppSettings["URLPrefix"]);
                     }
                     catch (Exception)
                     {

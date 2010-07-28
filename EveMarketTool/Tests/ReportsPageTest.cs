@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Text;
 using NUnit.Framework;
 using EveMarketTool.Tests.Mock_Objects;
+using System.Configuration;
 
 namespace EveMarketTool.Tests
 {
@@ -53,10 +54,10 @@ namespace EveMarketTool.Tests
             // Archive old logs should be called once per render
             Assert.AreEqual(1, factory.ArchiveCalls);
 
-            Assert.IsTrue(html.Contains("http://localhost:9999/Reports?archive=old"), "No link to archive old reports");
-            Assert.IsTrue(html.Contains("http://localhost:9999/Reports?archive=all"), "No link to archive all reports");
-            Assert.IsTrue(html.Contains("http://localhost:9999/Search"), "No search link");
-            Assert.IsTrue(html.Contains("http://localhost:9999/Reports"), "No refresh reports link");
+            Assert.IsTrue(html.Contains(ConfigurationSettings.AppSettings["URLPrefix"] + "Reports?archive=old"), "No link to archive old reports");
+            Assert.IsTrue(html.Contains(ConfigurationSettings.AppSettings["URLPrefix"] + "Reports?archive=all"), "No link to archive all reports");
+            Assert.IsTrue(html.Contains(ConfigurationSettings.AppSettings["URLPrefix"] + "Search"), "No search link");
+            Assert.IsTrue(html.Contains(ConfigurationSettings.AppSettings["URLPrefix"] + "Reports"), "No refresh reports link");
         }
 
         [Test]
@@ -67,9 +68,9 @@ namespace EveMarketTool.Tests
             string html = page.Render(null, null, null, emptyHeaders, emptyQuery);
             string lowerCaseText = WebUtils.PlainText(html).ToLower();
 
-            Assert.IsFalse(html.Contains("http://localhost:9999/Reports?archive=old"), "Shouldn't link to archive old reports");
-            Assert.IsFalse(html.Contains("http://localhost:9999/Reports?archive=all"), "Shouldn't link to archive all reports");
-            Assert.IsTrue(html.Contains("http://localhost:9999/Reports"), "No refresh reports link");
+            Assert.IsFalse(html.Contains(ConfigurationSettings.AppSettings["URLPrefix"] + "Reports?archive=old"), "Shouldn't link to archive old reports");
+            Assert.IsFalse(html.Contains(ConfigurationSettings.AppSettings["URLPrefix"] + "Reports?archive=all"), "Shouldn't link to archive all reports");
+            Assert.IsTrue(html.Contains(ConfigurationSettings.AppSettings["URLPrefix"] + "Reports"), "No refresh reports link");
         }
 
         [Test]

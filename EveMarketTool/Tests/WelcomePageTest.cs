@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
 using NUnit.Framework;
+using System.Configuration;
+
+
 
 namespace EveMarketTool.Tests
 {
@@ -42,7 +45,7 @@ namespace EveMarketTool.Tests
 
             Assert.IsTrue(textOnly.Contains("Welcome captain, it is my pleasure to serve you."), "Not a pleasure to serve me");
             Assert.IsTrue(textOnly.Contains("To do this, I need to be added to your 'trusted' list."), "No trust request");
-            Assert.IsTrue(html.Contains("http://localhost:9999/trustme"), "No trustme link");
+            Assert.IsTrue(html.Contains(ConfigurationSettings.AppSettings["URLPrefix"] + "trustme"), "No trustme link");
             Assert.IsTrue(textOnly.Contains("This lets me know which system we are in, which helps me find the most profitable routes for us to take!"), "No trust explanation");
             Assert.IsTrue(html.Contains("<title>NavBot</title>"), "HTML title tag missing");
         }
@@ -55,8 +58,8 @@ namespace EveMarketTool.Tests
 
             Assert.IsTrue(textOnly.Contains("Jameson"), "Forgot Captain Jameson's name");
             Assert.IsTrue(textOnly.Contains("to assist you in finding the most profitable trade routes in the universe."), "No purpose given");
-            Assert.IsTrue(html.Contains("http://localhost:9999/Search"), "No search link");
-            Assert.IsTrue(html.Contains("http://localhost:9999/Reports"), "No reports link");
+            Assert.IsTrue(html.Contains(ConfigurationSettings.AppSettings["URLPrefix"] + "Search"), "No search link");
+            Assert.IsTrue(html.Contains(ConfigurationSettings.AppSettings["URLPrefix"] + "Reports"), "No reports link");
             Assert.IsTrue(html.Contains("<title>NavBot</title>"), "HTML title tag missing");
         }
     }
