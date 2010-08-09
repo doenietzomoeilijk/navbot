@@ -3,8 +3,8 @@
 
 Thank-you for your purchase of the NavBot-class trade assistant. This short guide will help you install the unit and connect it with your Pod's systems.
 
-== Installing NavBot K ==
-To install, simply run "NavBot K (Installer).exe" and choose an installation path. This installer and version should automatically ask you to elevate administrator. 
+== Installing NavBot L ==
+To install, simply run "NavBot-L.exe" and choose an installation path. This installer and version should automatically ask you to elevate administrator. 
 
 *Note: This installer will not create a Start Menu item at this time. This version will also use port 80 as default to address the current in game browser trust issue. If this issue is ever fixed and you wish to use a different port, you can now change this information in NavBot.exe.config*
 
@@ -20,10 +20,13 @@ WARNING: NavBot must always be run as the administrator. This is a bit awkward, 
   # Click OK
 Now whenever you run NavBot, it will run as the Administrator. If you don't do this, it won't work. We're sorry! If you know some C# and want to fix this, go ahead and grab the source from this site and submit a patch. We're very friendly!
 
-== Your First Time with NavBot ==
-Once NavBot is running in the taskbar, go into EVE and open the in-game browser. Either press Ctrl-V or type "http://localhost:9999" into the address bar, and press enter. This will connect you to NavBot.
+**** Important note to Skype Users ****
+To use NavBot with Skype you will need to close Skype, run Navbot and reopen Skype to fix NavBot's error that the port is in use.
 
-To get the most out of NavBot, you need to make it a "trusted site". NavBot itself gives you links to do this, but sometimes the EVE browser seems to forget. You might have to open the list of trusted sites manually from the menu bar and check that http://localhost:9999 is listed as trusted.
+== Your First Time with NavBot ==
+Once NavBot is running in the taskbar, go into EVE and open the in-game browser. Either press Ctrl-V or type "http://localhost" into the address bar, and press enter. This will connect you to NavBot.
+
+To get the most out of NavBot, you need to make it a "trusted site". NavBot itself gives you links to do this, but sometimes the EVE browser seems to forget. You might have to open the list of trusted sites manually from the menu bar and check that http://localhost is listed as trusted.
 
 Since this is your first time, let's take it slow. Ask NavBot to show you a list of market reports you already have (3rd option). If you have any reports, tell NavBot to remove them all - this places them in an Archive folder in case you want them again in the future.
 
