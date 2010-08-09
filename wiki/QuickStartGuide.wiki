@@ -11,6 +11,8 @@ To install, simply run "NavBot-L.exe" and choose an installation path. This inst
 == Installing NavBot J and setting it to run as Administrator ==
 To install, extract all the files from the zip and then right-click on setup-run-as-administrator.exe choose "Run as Administrator". NavBot should automatically detect the EVE directories that link you to your Pod and will run in the system tray (bottom-right).
 
+*All Versions of NavBot:*
+
 WARNING: NavBot must always be run as the administrator. This is a bit awkward, but you can set it up as follows:
   # Search for NavBot.exe (in Vista+ you can do this by clicking on Start, typing "NavBot.exe" and waiting)
   # Right-click on the NavBot.exe result and open its properties.
