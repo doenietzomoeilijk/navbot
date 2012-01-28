@@ -97,7 +97,8 @@ namespace EveMarketTool
         public override string ToString()
         {
             Variables.Total_Sales += Quantity * UnitPrice;
-            string output = String.Format("<tr><td><font size='$fontsz_tiny' face='$fontname'><a href=\"javascript:CCPEVE.showInfo({0})\">{1}</a>", Type.Id, Type.Name) +
+			// Changed to CCPEVE.showMarketDetails - Alex Smith - Defect #84 & #87
+            string output = String.Format("<tr><td><font size='$fontsz_tiny' face='$fontname'><a href=\"javascript:CCPEVE.showMarketDetails({0})\">{1}</a>", Type.Id, Type.Name) +
                      String.Format(CultureInfo.InvariantCulture + "</font></td><td><font size='$fontsz_tiny' face='$fontname'>{0}</font></td><td><font size='$fontsz_tiny' face='$fontname'>{1}</font></td><td><font size='$fontsz_tiny' face='$fontname'>{2:0.##}</font></td></tr>", Quantity, UnitPrice, Quantity * UnitPrice);
             // lazy sorry
             output = output.Replace("$fontname", ConfigurationSettings.AppSettings["FontName"]);
